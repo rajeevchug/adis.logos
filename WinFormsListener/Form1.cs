@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using Logos.Contract;
+using Adis.Log.Contract;
 using System.Threading;
 
 namespace WinFormsListener

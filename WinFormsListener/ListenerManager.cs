@@ -8,8 +8,8 @@ namespace WinFormsListener
 {
 	class ListenerManager
 	{
-		static ChannelFactory<Logos.Contract.IListenerContract> channel;
-		static Logos.Contract.IListenerContract listener;
+		static ChannelFactory<Adis.Log.Contract.IListenerContract> channel;
+		static Adis.Log.Contract.IListenerContract listener;
 
 		public static void StartService()
 		{
@@ -20,7 +20,7 @@ namespace WinFormsListener
 			{
 				iContext = new InstanceContext(new WinFormsListener.ListenerCallback());
 
-				channel = new DuplexChannelFactory<Logos.Contract.IListenerContract>(iContext, "NetTcpBinding");
+				channel = new DuplexChannelFactory<Adis.Log.Contract.IListenerContract>(iContext, "ListenerEndpoint");
 				listener = channel.CreateChannel();
 				success = listener.InitialiseLink();
 			}
