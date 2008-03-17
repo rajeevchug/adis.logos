@@ -25,8 +25,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleHost", "server\Conso
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsListener", "WinFormsListener\WinFormsListener.csproj", "{0A766CF4-44CB-48E6-86AC-0DF131E38AF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{FE8A7A81-3A0B-4C19-A400-1400A9693B30}"
-EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "IIS Hosted Site", "server\IIS Hosted Site\", "{940A91B6-31B2-4530-B4B4-765AA4D156B8}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFramework = "3.5"
@@ -48,6 +46,8 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "IIS Hosted Site", "server\I
 		VWDPort = "2564"
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StressTestClient", "client\dotnet\StressTestClient\StressTestClient.csproj", "{5EE51072-47EC-4515-BC1F-5000DAB93850}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -139,16 +139,6 @@ Global
 		{0A766CF4-44CB-48E6-86AC-0DF131E38AF3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0A766CF4-44CB-48E6-86AC-0DF131E38AF3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{0A766CF4-44CB-48E6-86AC-0DF131E38AF3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{FE8A7A81-3A0B-4C19-A400-1400A9693B30}.Debug|.NET.ActiveCfg = Debug|Any CPU
-		{FE8A7A81-3A0B-4C19-A400-1400A9693B30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FE8A7A81-3A0B-4C19-A400-1400A9693B30}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FE8A7A81-3A0B-4C19-A400-1400A9693B30}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{FE8A7A81-3A0B-4C19-A400-1400A9693B30}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{FE8A7A81-3A0B-4C19-A400-1400A9693B30}.Release|.NET.ActiveCfg = Release|Any CPU
-		{FE8A7A81-3A0B-4C19-A400-1400A9693B30}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FE8A7A81-3A0B-4C19-A400-1400A9693B30}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FE8A7A81-3A0B-4C19-A400-1400A9693B30}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{FE8A7A81-3A0B-4C19-A400-1400A9693B30}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{940A91B6-31B2-4530-B4B4-765AA4D156B8}.Debug|.NET.ActiveCfg = Debug|.NET
 		{940A91B6-31B2-4530-B4B4-765AA4D156B8}.Debug|.NET.Build.0 = Debug|.NET
 		{940A91B6-31B2-4530-B4B4-765AA4D156B8}.Debug|Any CPU.ActiveCfg = Debug|.NET
@@ -159,6 +149,16 @@ Global
 		{940A91B6-31B2-4530-B4B4-765AA4D156B8}.Release|Any CPU.ActiveCfg = Debug|.NET
 		{940A91B6-31B2-4530-B4B4-765AA4D156B8}.Release|Mixed Platforms.ActiveCfg = Debug|.NET
 		{940A91B6-31B2-4530-B4B4-765AA4D156B8}.Release|Mixed Platforms.Build.0 = Debug|.NET
+		{5EE51072-47EC-4515-BC1F-5000DAB93850}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{5EE51072-47EC-4515-BC1F-5000DAB93850}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EE51072-47EC-4515-BC1F-5000DAB93850}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EE51072-47EC-4515-BC1F-5000DAB93850}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5EE51072-47EC-4515-BC1F-5000DAB93850}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5EE51072-47EC-4515-BC1F-5000DAB93850}.Release|.NET.ActiveCfg = Release|Any CPU
+		{5EE51072-47EC-4515-BC1F-5000DAB93850}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EE51072-47EC-4515-BC1F-5000DAB93850}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EE51072-47EC-4515-BC1F-5000DAB93850}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{5EE51072-47EC-4515-BC1F-5000DAB93850}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -171,8 +171,8 @@ Global
 		{66D2755B-9AA2-4B08-932B-9622E1FCC918} = {F5D24962-734B-400C-B352-80CFF3427FE3}
 		{4E31D0DB-A25A-4659-85D4-4C8691C57A35} = {18B426E3-16EC-40F9-80E4-DD9DE8C74A8D}
 		{C1415138-DC9C-4DDE-81AA-CEAAA383B823} = {18B426E3-16EC-40F9-80E4-DD9DE8C74A8D}
+		{5EE51072-47EC-4515-BC1F-5000DAB93850} = {18B426E3-16EC-40F9-80E4-DD9DE8C74A8D}
 		{E028DB5A-70E2-4490-9B00-69392DDBF6DC} = {14F827DF-E3B3-4322-9475-CC54DF3937F8}
 		{940A91B6-31B2-4530-B4B4-765AA4D156B8} = {14F827DF-E3B3-4322-9475-CC54DF3937F8}
-		{FE8A7A81-3A0B-4C19-A400-1400A9693B30} = {14F827DF-E3B3-4322-9475-CC54DF3937F8}
 	EndGlobalSection
 EndGlobal
