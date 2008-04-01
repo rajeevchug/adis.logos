@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using log4net;
 
+[assembly:log4net.Config.XmlConfigurator(Watch = true)]
 namespace Adis.Log.Client
 {
 	public static class LogManager
