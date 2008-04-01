@@ -4,9 +4,6 @@ using System.Linq;
 using System.Text;
 using log4net;
 
-// Configure log4net using the .config file
-[assembly: log4net.Config.XmlConfigurator(ConfigFile="log4net.config", Watch = false)]
-
 namespace Adis.Log.Client
 {
 	public static class LogManager
@@ -18,7 +15,7 @@ namespace Adis.Log.Client
 		/// </summary>
 		public static void Configure()
 		{
-			log4net.Config.XmlConfigurator.ConfigureAndWatch(new System.IO.FileInfo("log4net.config"));
+			log4net.Config.XmlConfigurator.ConfigureAndWatch(new System.IO.FileInfo(System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));
 			InitialiseGlobalProperties();
 		}
 
