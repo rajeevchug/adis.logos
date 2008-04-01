@@ -85,7 +85,7 @@ namespace Adis.Log.Client
 				Category = (loggingEvent.GetProperties()[CategoryPropertyKey] ?? "").ToString(),
 				Application = (loggingEvent.GetProperties()[ApplicationPropertyKey] ?? "").ToString(),
 				//Use CurrentThread.Name if the Instance property hasn't been set.
-				Instance = (loggingEvent.GetProperties()[InstancePropertyKey] ?? System.Threading.Thread.CurrentThread.Name).ToString(),
+				Instance = (loggingEvent.GetProperties()[InstancePropertyKey] ?? "").ToString(),
 				Machine = (loggingEvent.GetProperties()[HostNamePropertyKey] ?? "").ToString(),
 				Message = (loggingEvent.MessageObject.ToString() ?? ""),
 				Time = loggingEvent.TimeStamp,
