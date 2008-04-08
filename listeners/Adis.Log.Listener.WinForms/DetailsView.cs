@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace WinFormsListener
+namespace Adis.Log.Listener.WinForms
 {
 	public partial class DetailsView : Form
 	{

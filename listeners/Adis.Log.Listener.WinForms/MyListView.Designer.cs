@@ -1,4 +1,4 @@
-﻿namespace WinFormsListener
+﻿namespace Adis.Log.Listener.WinForms
 {
 	partial class MyListView
 	{

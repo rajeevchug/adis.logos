@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WinFormsListener.Properties
+namespace Adis.Log.Listener.WinForms.Properties
 {
 
 
