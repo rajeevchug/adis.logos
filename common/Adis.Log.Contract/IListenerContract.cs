@@ -7,9 +7,12 @@ using System.ServiceModel;
 namespace Adis.Log.Contract
 {
 	[ServiceContract(CallbackContract = typeof(IListenerCallbackContract))]
-	public interface IListenerContract
+	public interface IListenerContract : IReporterContract
 	{
 		[OperationContract]
-		bool InitialiseLink();
+		bool InitialiseLink(RequestFilter filter);
+
+		[OperationContract(IsOneWay=true)]
+		void KeepAlive();
 	}
 }
