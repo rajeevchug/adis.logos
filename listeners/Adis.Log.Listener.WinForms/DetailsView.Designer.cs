@@ -1,4 +1,4 @@
-﻿namespace WinFormsListener
+﻿namespace Adis.Log.Listener.WinForms
 {
 	partial class DetailsView
 	{
@@ -45,7 +45,7 @@
 			this.lblMachine = new System.Windows.Forms.Label();
 			this.lblUser = new System.Windows.Forms.Label();
 			this.lblSeverity = new System.Windows.Forms.Label();
-			this.button1 = new System.Windows.Forms.Button();
+			this.btnOk = new System.Windows.Forms.Button();
 			this.groupBox1.SuspendLayout();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -223,23 +223,25 @@
 			this.lblSeverity.TabIndex = 3;
 			this.lblSeverity.Text = "label7";
 			// 
-			// button1
+			// btnOk
 			// 
-			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button1.Location = new System.Drawing.Point(290, 381);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(75, 23);
-			this.button1.TabIndex = 4;
-			this.button1.Text = "Ok";
-			this.button1.UseVisualStyleBackColor = true;
-			this.button1.Click += new System.EventHandler(this.button1_Click);
+			this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnOk.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.btnOk.Location = new System.Drawing.Point(290, 381);
+			this.btnOk.Name = "btnOk";
+			this.btnOk.Size = new System.Drawing.Size(75, 23);
+			this.btnOk.TabIndex = 4;
+			this.btnOk.Text = "Ok";
+			this.btnOk.UseVisualStyleBackColor = true;
+			this.btnOk.Click += new System.EventHandler(this.button1_Click);
 			// 
 			// DetailsView
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.CancelButton = this.btnOk;
 			this.ClientSize = new System.Drawing.Size(377, 416);
-			this.Controls.Add(this.button1);
+			this.Controls.Add(this.btnOk);
 			this.Controls.Add(this.lblSeverity);
 			this.Controls.Add(this.lblUser);
 			this.Controls.Add(this.lblMachine);
@@ -286,6 +288,6 @@
 		private System.Windows.Forms.Label lblMachine;
 		private System.Windows.Forms.Label lblUser;
 		private System.Windows.Forms.Label lblSeverity;
-		private System.Windows.Forms.Button button1;
+		private System.Windows.Forms.Button btnOk;
 	}
 }
