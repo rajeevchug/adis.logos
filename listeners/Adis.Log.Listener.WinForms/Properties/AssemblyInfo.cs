@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("WinFormsListener")]
+[assembly: AssemblyTitle("Adis.Log.Listener.WinForms")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Wolters Kluwer Health - Pharma Solutions Division")]
-[assembly: AssemblyProduct("WinFormsListener")]
+[assembly: AssemblyProduct("Adis.Log.Listener.WinForms")]
 [assembly: AssemblyCopyright("Copyright © Wolters Kluwer Health - Pharma Solutions Division 2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
