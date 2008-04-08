@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Adis.Log.Contract;
 
-namespace WinFormsListener
+namespace Adis.Log.Listener.WinForms
 {
 	public class LogObjectList 
 	{
@@ -20,6 +20,11 @@ namespace WinFormsListener
 		public void Add(LogTransportObject logObject)
 		{
 			theList.Add(logObject);
+			ResetVirtualSize();
+		}
+
+		private static void ResetVirtualSize()
+		{
 			if (Program.mainForm.InvokeRequired)
 			{
 				voidVoidDelegate d = new voidVoidDelegate(Program.mainForm.ResetVirtualListSize);
@@ -29,6 +34,12 @@ namespace WinFormsListener
 			{
 				Program.mainForm.ResetVirtualListSize();
 			}
+		}
+
+		public void AddRange(IEnumerable<LogTransportObject> collection)
+		{
+			theList.AddRange(collection);
+			ResetVirtualSize();
 		}
 
 		public void Clear()
