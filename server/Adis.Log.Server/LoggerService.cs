@@ -40,19 +40,8 @@ namespace Adis.Log.Server
 		public void PostLog(LogTransportObject logObject)
 		{
 			ILog internalLog = LogManager.GetLogger(this.GetType());
-			internalLog.DebugFormat("Attempting to log a new log. App={0} Severity={1}", logObject.Application, logObject.Severity); 
-			try
-			{
-				Implementer.InsertNewLog(logObject);
-				Adis.Log.Server.ListenerService.NotifyListeners(logObject);
-			}
-			catch (Exception e)
-			{
-				System.Diagnostics.Debug.WriteLine(e.ToString());
-				internalLog.Error(String.Format("Failed. App={0} Severity={1}", logObject.Application, logObject.Severity), e); 
-				
-				//throw;
-			}
+			Implementer.InsertNewLog(logObject, Repository.RepositoryInstance);
+			Adis.Log.Server.ListenerService.NotifyListeners(logObject);
 		}
 
 		#endregion
