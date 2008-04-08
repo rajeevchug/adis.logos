@@ -12,7 +12,7 @@ namespace SampleApp
 		static void Main(string[] args)
 		{
 			//sets up the logging
-			LogManager.Configure();
+			LogManager.Configure(new System.IO.FileInfo("log4net.config"));
 			System.Threading.Thread.CurrentThread.Name = "main";
 
 			LogPart1();
