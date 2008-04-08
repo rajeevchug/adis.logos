@@ -1,11 +1,26 @@
 using System;
 using Adis.Log.Contract;
+using System.Data.Linq;
+using System.Data.Linq.Mapping;
+using System.Data;
 
 namespace Adis.Log.Server
 {
-
-	partial class LogEvent
+	partial class LogEvent 
 	{
+			//These are the max lengths of the fields in the database
+			private static readonly int MaxApplicationLength = 256;
+			private static readonly int MaxCategoryLength = 64;
+			private static readonly int MaxInstanceLength = 256;
+			private static readonly int MaxMachineLength = 256;
+			private static readonly int MaxMessageLength = 2048;
+			private static readonly int MaxSeverityLength = 5;
+			private static readonly int MaxUserLength = 256;
+
+		/// <summary>
+		/// This method will convert the current Logevent Object to a LogTransportObject
+		/// </summary>
+		/// <returns>A LogTransportObject</returns>
 		public LogTransportObject ToLogTransportObject()
 		{
 			LogTransportObject logObj = new LogTransportObject()
@@ -17,13 +32,18 @@ namespace Adis.Log.Server
 				Instance = this.Instance,
 				Machine = this.Machine,
 				Message = this.Message,
-				Severity = this.Message,
+				Severity = this.Severity,
 				Time = this.EventTime,
 				User = this.User
 			};
 			return logObj;
 		}
 
+		/// <summary>
+		/// Conversion operator to convert a LogTransportObject to a LogEvent
+		/// </summary>
+		/// <param name="transportObj">The object to convert</param>
+		/// <returns></returns>
 		public static explicit operator LogEvent(LogTransportObject transportObj)
 		{
 			LogEvent logEvent = new LogEvent()
@@ -40,38 +60,32 @@ namespace Adis.Log.Server
 				User = transportObj.User
 			};
 
-			int MaxApplicationLength = 256;
-			int MaxCategoryLength = 64;
-			int MaxInstanceLength = 256;
-			int MaxMachineLength = 256;
-			int MaxMessageLength = 2048;
-			int MaxSeverityLength = 5;
-			int MaxUserLength = 256;
-			if (logEvent.Application.Length > MaxApplicationLength)
+			//restrict the lengths of string fields to their maximum DB length
+			if (!String.IsNullOrEmpty(logEvent.Application) && logEvent.Application.Length > MaxApplicationLength)
 			{
 				logEvent.Application = logEvent.Application.Substring(0, MaxApplicationLength);
 			}
-			if (logEvent.Category.Length > MaxCategoryLength)
+			if (!String.IsNullOrEmpty(logEvent.Category) && logEvent.Category.Length > MaxCategoryLength)
 			{
 				logEvent.Category = logEvent.Category.Substring(0, MaxCategoryLength);
 			}
-			if (logEvent.Instance.Length > MaxInstanceLength)
+			if (!String.IsNullOrEmpty(logEvent.Instance) && logEvent.Instance.Length > MaxInstanceLength)
 			{
 				logEvent.Instance = logEvent.Instance.Substring(0, MaxInstanceLength);
 			}
-			if (logEvent.Machine.Length > MaxMachineLength)
+			if (!String.IsNullOrEmpty(logEvent.Machine) && logEvent.Machine.Length > MaxMachineLength)
 			{
 				logEvent.Machine = logEvent.Machine.Substring(0, MaxMachineLength);
 			}
-			if (logEvent.Message.Length > MaxMessageLength)
+			if (!String.IsNullOrEmpty(logEvent.Message) && logEvent.Message.Length > MaxMessageLength)
 			{
 				logEvent.Message = logEvent.Message.Substring(0, MaxMessageLength);
 			}
-			if (logEvent.Severity.Length > MaxSeverityLength)
+			if (!String.IsNullOrEmpty(logEvent.Severity) && logEvent.Severity.Length > MaxSeverityLength)
 			{
 				logEvent.Severity = logEvent.Severity.Substring(0, MaxSeverityLength);
 			}
-			if (logEvent.User.Length > MaxUserLength)
+			if (!String.IsNullOrEmpty(logEvent.User) && logEvent.User.Length > MaxUserLength)
 			{
 				logEvent.User = logEvent.User.Substring(0, MaxUserLength);
 			}
