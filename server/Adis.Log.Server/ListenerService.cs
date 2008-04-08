@@ -10,57 +10,61 @@ namespace Adis.Log.Server
 {
 	class ListenerService : IListenerContract
 	{
-		private static List<IListenerCallbackContract> CallbackObjList = new List<IListenerCallbackContract>();
-		private static ILog log = LogManager.GetLogger(typeof(ListenerService));
+		private ListenerImplementer listenerImplementer;
+		
+		public ListenerService()
+		{
+			listenerImplementer = new ListenerImplementer();
+		}
 
 		#region IListenerContract Members
 
-		public bool InitialiseLink()
+		/// <summary>
+		/// responds to a listener trying to initialise a link to this server. Adds the listeners details into callbackObjList
+		/// </summary>
+		/// <param name="requestFilter"></param>
+		/// <returns></returns>
+		public bool InitialiseLink(RequestFilter requestFilter)
 		{
-			bool success = true;
-			log.Info("Initialising new Listener");
+			return listenerImplementer.InitialiseLink(requestFilter, 
+				OperationContext.Current.GetCallbackChannel<IListenerCallbackContract>(), 
+				OperationContext.Current.Channel.RemoteAddress.Uri, OperationContext.Current.Channel, ListenerImplementer.CallbackObjList);
+		}
+
+
+		/// <summary>
+		/// Notify all of the current listeners.
+		/// </summary>
+		/// <param name="logObject">The log that listeners are being notified of.</param>
+		public static void NotifyListeners(LogTransportObject logObject)
+		{
+			ListenerImplementer.NotifyListeners(logObject, ListenerImplementer.CallbackObjList);
+		}
+
+
+		public List<LogTransportObject> GetRecords(RequestFilter filter, int skipFirst, int maxRecords)
+		{
 			try
 			{
-				lock (CallbackObjList)
-				{
-					CallbackObjList.Add(OperationContext.Current.GetCallbackChannel<IListenerCallbackContract>());
-				}
+				return ReporterImplementer.GetRecords(filter, skipFirst, maxRecords,
+					Repository.RepositoryInstance, OperationContext.Current.Channel.RemoteAddress.Uri, true);
 			}
 			catch (Exception e)
 			{
-				success = false;
-				log.Error("Failed to add new listener into listener list", e);
-#if DEBUG
-				System.Diagnostics.Debug.WriteLine(e.ToString());
-#endif
+				ILog internalLog = LogManager.GetLogger(this.GetType());
+				internalLog.Error(String.Format("Exception raised in GetRecords() for listener: {0}", 
+					OperationContext.Current.Channel.RemoteAddress.Uri), e);
 			}
-			return success;
+			return null;
+		}
+
+		public void KeepAlive()
+		{
+			ILog internalLog = LogManager.GetLogger(this.GetType());
+			internalLog.DebugFormat("got keep alive message from listener:{0}", OperationContext.Current.Channel.RemoteAddress.Uri);
+			return;
 		}
 
 		#endregion
-
-		public static void NotifyListeners(LogTransportObject logObject)
-		{
-			try
-			{
-				lock (CallbackObjList)
-				{
-					foreach (IListenerCallbackContract listener in CallbackObjList)
-					{
-						log.DebugFormat("notifying listener of new log from app:{0}", logObject.Application);
-						listener.Notify(logObject);
-					}
-				}
-			}
-			catch (Exception e)
-			{
-				log.Error(String.Format("Failed to notify (all) listeners of a new log. App: {0}",
-					logObject != null ? logObject.Application : "{null}"),
-					e);
-#if DEBUG
-				System.Diagnostics.Debug.WriteLine(e.ToString());
-#endif
-			}
-		}
 	}
 }
