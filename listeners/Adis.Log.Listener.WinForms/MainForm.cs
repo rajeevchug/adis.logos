@@ -1,21 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using Adis.Log.Contract;
-using System.Threading;
 
-namespace WinFormsListener
+namespace Adis.Log.Listener.WinForms
 {
 	public partial class MainForm : Form
 	{
 
 		public LogObjectList ListOfLogObjects;
-		private Thread bgThread;
 
 		public MainForm()
 		{
@@ -26,13 +21,64 @@ namespace WinFormsListener
 			listView1.VirtualListSize = ListOfLogObjects.Count;
 			listView1.RetrieveVirtualItem += new RetrieveVirtualItemEventHandler(listView1_RetrieveVirtualItem);
 
-			bgThread = new Thread(new ThreadStart(BgThreadStart));
-			//bgThread.Start();
+			filterSeverity.Items.AddRange(RequestFilter.SeverityRanks.Keys.ToArray());
+
+		}
+
+		private void ConnectToListener()
+		{
+			ClearListView();
+
+			progressBar1.Style = ProgressBarStyle.Marquee;
+			statusLabel.ForeColor = Color.Blue;
+			statusLabel.Text = "Attempting to connect to the listener service.";
+			ListenerManager listenerManager = new ListenerManager();
+
+			listenerManager.SetRequestFilter(
+				filterCategory.Enabled ? filterCategory.Text : null, filterCategoryExactMatch.Checked,
+				filterApplication.Enabled ? filterApplication.Text : null, filterApplicationExactMatch.Checked,
+				filterInstance.Enabled ? filterInstance.Text : null, filterInstanceExactMatch.Checked,
+				filterMachine.Enabled ? filterMachine.Text : null, filterMachineExactMatch.Checked,
+				filterUser.Enabled ? filterUser.Text : null, filterUserExactMatch.Checked,
+				filterSeverity.Enabled ? filterSeverity.Text : null, 
+				filterStartTime.Enabled ? (DateTime?)filterStartTime.Value : null,
+				filterMessage.Enabled ? filterMessage.Text : null, filterMessageExactMatch.Checked);
+
+			listenerManager.StartServiceCompleted += new EventHandler<StartServiceEventArgs>(listenerManager_StartServiceCompleted);
+			listenerManager.StartServiceAsync();
+		}
+
+		protected override void OnClosed(EventArgs e)
+		{
+			KeepConnectionAlive.StopKeepAliveThread();
+			base.OnClosed(e);
+		}
+
+		void listenerManager_StartServiceCompleted(object sender, StartServiceEventArgs e)
+		{
+			progressBar1.Style = ProgressBarStyle.Continuous;
+			progressBar1.Value = progressBar1.Maximum;
+			if (e.Succeeded)
+			{
+				statusLabel.ForeColor = Color.Black;
+				statusLabel.Text = "Listener connected successfully";
+			}
+			else
+			{
+				statusLabel.ForeColor = Color.Red;
+				statusLabel.Text = "Listener failed to connect sucessfully.";
+				ErrorDetails.Text = ((Object)e.Exception ?? "").ToString();
+			}
+		}
+
+		private void btnReconnect_Click(object sender, EventArgs e)
+		{
+			ErrorDetails.Text = "";
+			ConnectToListener();
 		}
 
 		protected override void OnClosing(CancelEventArgs e)
 		{
-			KillBgThread();
 			base.OnClosing(e);
 		}
 
@@ -70,7 +116,7 @@ namespace WinFormsListener
 		public void ResetVirtualListSize()
 		{
 			listView1.VirtualListSize = ListOfLogObjects.Count;
-			if (checkBoxAutoScroll.Checked)
+			if (checkBoxAutoScroll.Checked && ListOfLogObjects.Count < 0)
 			{
 				listView1.EnsureVisible(ListOfLogObjects.Count - 1);
 			}
@@ -78,50 +124,11 @@ namespace WinFormsListener
 
 		public String StatusText
 		{
-			get { return label1.Text; }
-			set { label1.Text = value; }
+			get { return statusLabel.Text; }
+			set { statusLabel.Text = value; }
 
 		}
 		delegate void UpdateListView();
-
-		private void BgThreadStart()
-		{
-			for (int i = 0; i < 1000; i++)
-			{
-				Thread.Sleep(50);
-				lock (ListOfLogObjects)
-				{
-					LogTransportObject logObject = new LogTransportObject()
-					{
-						Application = "Application",
-						Category = "Category",
-						Severity = "Severity",
-						ExtraInfo = "ExtraInfoExtraInfoExtraInfoExtraInfoExtraInfoExtraInfoExtraInfoExtraInfoExtraInfoExtraInfoExtraInfoExtraInfoExtraInfo",
-						Message = "MessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessage",
-						Time = DateTime.Now,
-						Instance = "Instance",
-						Machine = "Machine",
-						User = "User"
-					};
-
-					ListOfLogObjects.Add(logObject);
-
-				}
-			}
-
-
-		}
-
-
-		public void KillBgThread()
-		{
-			bgThread.Abort();
-		}
-
-		private void listView1_SelectedIndexChanged(object sender, EventArgs e)
-		{
-
-		}
 
 		private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
@@ -142,6 +149,66 @@ namespace WinFormsListener
 			}
 		}
 
+		private void CategoryLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			ToggleFilterGroupEnabled(filterCategory, filterCategoryExactMatch);
+		}
+
+		private void ApplicationLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			ToggleFilterGroupEnabled(filterApplication, filterApplicationExactMatch);
+		}
+
+		private void InstanceLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			ToggleFilterGroupEnabled(filterInstance, filterInstanceExactMatch);
+		}
+
+		private void MachineLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			ToggleFilterGroupEnabled(filterMachine, filterMachineExactMatch);
+		}
+
+		private void UserLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			ToggleFilterGroupEnabled(filterUser, filterUserExactMatch);
+		}
+
+		private void SeverityLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			ToggleFilterGroupEnabled( filterSeverity, null);
+		}
+
+		private void StartTimeLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			ToggleFilterGroupEnabled(filterStartTime, null);
+		}
+
+		private void MessageLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			ToggleFilterGroupEnabled(filterMessage, filterMessageExactMatch);
+		}
+
+		private void ToggleFilterGroupEnabled(Control textbox, Control checkbox)
+		{
+			textbox.Enabled = !textbox.Enabled;
+			//in case they might get out of sync, make the textbox the master
+			if (checkbox != null)
+			{
+				checkbox.Enabled = textbox.Enabled;
+			}
+		}
+
+		private void btnClearList_Click(object sender, EventArgs e)
+		{
+			ClearListView();
+		}
+
+		private void ClearListView()
+		{
+			ListOfLogObjects.Clear();
+			ResetVirtualListSize();
+		}
 	}
 
 }
