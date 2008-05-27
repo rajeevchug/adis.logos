@@ -4,6 +4,7 @@ using System.Linq;
 using Adis.Log.Contract;
 using log4net;
 using System.ServiceModel;
+using System;
 
 namespace Adis.Log.Server
 {
@@ -23,7 +24,28 @@ namespace Adis.Log.Server
 		/// <returns>a List&lt;LogTransportObject&gt;. Each LogTransportObject contains the entire record from the database </returns>
 		public List<LogTransportObject> GetRecords(RequestFilter filter, int skipFirst, int maxRecords)
 		{
-			return ReporterImplementer.GetRecords(filter, skipFirst, maxRecords, Repository.RepositoryInstance, OperationContext.Current.Channel.RemoteAddress.Uri, false);
+			ILog internalLog = LogManager.GetLogger(typeof(ReporterImplementer));
+			try
+			{
+				Uri uri = null;
+				if (OperationContext.Current != null &&
+					OperationContext.Current.Channel != null &&
+					OperationContext.Current.Channel.RemoteAddress != null &&
+					OperationContext.Current.Channel.RemoteAddress.Uri != null)
+				{
+					uri = OperationContext.Current.Channel.RemoteAddress.Uri;
+				}
+				else
+				{
+					uri = new Uri("http://invalidUri");
+				}
+				return ReporterImplementer.GetRecords(filter, skipFirst, maxRecords, Repository.RepositoryInstance, uri, false);
+			}
+			catch (Exception e)
+			{
+				internalLog.Error("ReporterService.GetRecords() got an error", e);
+				throw;
+			}
 		}
 
 
