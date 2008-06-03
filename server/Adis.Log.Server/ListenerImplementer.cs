@@ -29,7 +29,7 @@ namespace Adis.Log.Server
 		///The app-wide list of listeners registered on this server
 		private static List<ListenerInfo> callbackObjList = new List<ListenerInfo>();
 
-		private static ILog log = LogManager.GetLogger(typeof(ListenerService));
+		private static ILog log = LogManager.GetLogger(typeof(ListenerImplementer));
 		#endregion
 
 		#region static properties
@@ -97,6 +97,7 @@ namespace Adis.Log.Server
 				log.Error(String.Format("Failed to notify (all) listeners of a new log. App: {0}",
 					logObject != null ? logObject.Application : "{null}"),
 					e);
+				throw;
 			}
 		}
 
@@ -106,8 +107,9 @@ namespace Adis.Log.Server
 		/// <remarks>
 		/// The most common reason to call this method is that the channel in a ListenerInfo object has raised an error or closed
 		/// </remarks>
+		/// <param name="listenerList">the master list of listeners</param>
 		/// <param name="listenersToRemove">A List of ListenerInfo objects to remove.</param>
-		private static void RemoveBadListeners(List<ListenerInfo> listenerList, List<ListenerInfo> listenersToRemove)
+		private static void RemoveBadListeners(IList<ListenerInfo> listenerList, IList<ListenerInfo> listenersToRemove)
 		{
 			if (listenersToRemove.Count > 0)
 			{
@@ -133,28 +135,19 @@ namespace Adis.Log.Server
 			IListenerCallbackContract callbackContract, 
 			Uri remoteAddressUri, 
 			IContextChannel channel,
-			List<ListenerInfo> listenerList)
+			IList<ListenerInfo> listenerList)
 		{
-			bool success = true;
-			log.Info("Initialising new Listener");
-			try
+			bool success = false;
+			lock (listenerListLockObject)
 			{
-				lock (listenerListLockObject)
+				ListenerInfo newListener = new ListenerInfo()
 				{
-					ListenerInfo newListener = new ListenerInfo()
-					{
-						callback = callbackContract,
-						filter = requestFilter,
-						remoteAddress = remoteAddressUri
-					};
-					listenerList.Add(newListener);
-
-				}
-			}
-			catch (Exception e)
-			{
-				success = false;
-				log.Error("Failed to add new listener into listener list", e);
+					callback = callbackContract,
+					filter = requestFilter,
+					remoteAddress = remoteAddressUri
+				};
+				listenerList.Add(newListener);
+				success = true;
 			}
 
 			if (success)
@@ -172,8 +165,7 @@ namespace Adis.Log.Server
 			//In that case the channel is open as far as the server is concerned but there is no current OperationContext
 			if (OperationContext.Current != null)
 			{
-				Uri remoteAddressBeingClosed = OperationContext.Current.Channel.RemoteAddress.Uri;
-				ChannelClosedInternal(remoteAddressBeingClosed, ListenerImplementer.CallbackObjList);
+				//this never happens
 			}
 			else
 			{
@@ -181,39 +173,6 @@ namespace Adis.Log.Server
 			}
 		}
 
-		/// <summary>
-		/// Removes the listener from the listeners list when it closes
-		/// </summary>
-		/// <remarks>
-		/// This functionality is encalsulated away from the actual closed event handler to make it unit testable 
-		/// </remarks>
-		/// <param name="remoteAddressBeingClosed"></param>
-		private void ChannelClosedInternal(Uri remoteAddressBeingClosed, List<ListenerInfo> listenerList)
-		{
-			lock (listenerListLockObject)
-			{
-				IEnumerable<ListenerInfo> listenerInfoList = listenerList.Where(
-					listenerInfo => listenerInfo.remoteAddress == remoteAddressBeingClosed);
-
-				if (listenerInfoList.Count() == 1)
-				{
-					listenerList.Remove(listenerInfoList.First());
-				}
-				else
-				{
-					if (listenerInfoList.Count() < 1)
-					{
-						log.DebugFormat("Closing a listener channel that doesn't exist in the listenerList. {0}",
-							remoteAddressBeingClosed);
-					}
-					else //must be > 1
-					{
-						log.DebugFormat("Closing a listener channel that exists multiple times in the listenerList. {0}",
-							remoteAddressBeingClosed);
-					}
-				}
-			}
-		}
 		#endregion
 
 

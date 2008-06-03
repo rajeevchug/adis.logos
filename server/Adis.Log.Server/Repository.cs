@@ -37,7 +37,7 @@ namespace Adis.Log.Server
 			}
 			//Note, we don't dispose the dbContext here because we will probably still need it in the code that called this 
 			//method. eg the code
-			//   IEnumerable<LogEvent> logEvents = Repository.GetInstance.GetAllLogEvents();
+			//   IQueryable<LogEvent> logEvents = Repository.GetInstance.GetAllLogEvents();
 			//   return logEvents.First();
 			// The return call is the one that actually accesses the DB and for that it needs the dbcontext
 		}

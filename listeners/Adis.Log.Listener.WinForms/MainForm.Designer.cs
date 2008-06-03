@@ -28,8 +28,8 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
-			System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
+			System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
+			System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.categoryLabel = new System.Windows.Forms.LinkLabel();
 			this.messageLabel = new System.Windows.Forms.LinkLabel();
@@ -405,13 +405,13 @@
             this.columnHeader5,
             this.columnHeader6});
 			this.listView1.FullRowSelect = true;
-			listViewGroup5.Header = "ListViewGroup";
-			listViewGroup5.Name = "listViewGroup1";
-			listViewGroup6.Header = "ListViewGroup";
-			listViewGroup6.Name = "listViewGroup2";
+			listViewGroup3.Header = "ListViewGroup";
+			listViewGroup3.Name = "listViewGroup1";
+			listViewGroup4.Header = "ListViewGroup";
+			listViewGroup4.Name = "listViewGroup2";
 			this.listView1.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup5,
-            listViewGroup6});
+            listViewGroup3,
+            listViewGroup4});
 			this.listView1.Location = new System.Drawing.Point(12, 319);
 			this.listView1.Name = "listView1";
 			this.listView1.Size = new System.Drawing.Size(896, 404);

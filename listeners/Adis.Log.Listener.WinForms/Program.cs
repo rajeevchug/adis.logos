@@ -7,8 +7,6 @@ namespace Adis.Log.Listener.WinForms
 {
 	static class Program
 	{
-		public static MainForm mainForm;
-
 		public static int UiThreadId { get; set; }
 
 		/// <summary>
@@ -22,8 +20,7 @@ namespace Adis.Log.Listener.WinForms
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
-			mainForm = new MainForm();
-			Application.Run(mainForm);
+			Application.Run(new MainForm());
 
 		}
 	}

@@ -19,6 +19,7 @@ namespace SampleApp
 
 			LogPart2();
 
+			LogPart3();
 			Console.Write("\n\n\nPress a key to exit...");
 			Console.ReadKey();
 		}
@@ -67,6 +68,25 @@ namespace SampleApp
 
 			log.WarnFormat("5 {0} {1}", "warnformat", typeof(UserHelper));
 			Console.Write("1");
+		}
+		static void LogPart3()
+		{
+			LogManager.Instance = "main thread instance";
+			ILog log = LogManager.GetLog("sample1");
+
+			System.Threading.Thread diffThread = new System.Threading.Thread(new System.Threading.ThreadStart(bgThreadMain));
+			diffThread.Start();
+			diffThread.Join();
+
+			log.Info("7 main thread info message");
+		}
+
+		static void bgThreadMain()
+		{
+			LogManager.Instance = "background thread instance";
+			ILog log = LogManager.GetLog("sample1");
+
+			log.Info("6 background thread info message");
 		}
 	}
 }

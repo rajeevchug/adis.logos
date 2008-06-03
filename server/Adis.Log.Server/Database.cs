@@ -6,16 +6,30 @@ using System.Data;
 
 namespace Adis.Log.Server
 {
-	partial class LogEvent 
+	partial class LogEvent
 	{
-			//These are the max lengths of the fields in the database
-			private static readonly int MaxApplicationLength = 256;
-			private static readonly int MaxCategoryLength = 64;
-			private static readonly int MaxInstanceLength = 256;
-			private static readonly int MaxMachineLength = 256;
-			private static readonly int MaxMessageLength = 2048;
-			private static readonly int MaxSeverityLength = 5;
-			private static readonly int MaxUserLength = 256;
+		//These are the max lengths of the fields in the database
+		private static readonly int MaxApplicationLength = 256;
+		private static readonly int MaxCategoryLength = 64;
+		private static readonly int MaxInstanceLength = 256;
+		private static readonly int MaxMachineLength = 256;
+		private static readonly int MaxMessageLength = 2048;
+		private static readonly int MaxSeverityLength = 5;
+		private static readonly int MaxUserLength = 256;
+
+		partial void OnCreated()
+		{
+				Application = "";
+				Category = "";
+				ExtraInfo = "";
+				Instance = "";
+				Machine = "";
+				Message = "";
+				Severity = "";
+				EventTime = DateTime.MinValue;
+				TimeLogged = DateTime.MinValue;
+				User = "";
+		}
 
 		/// <summary>
 		/// This method will convert the current Logevent Object to a LogTransportObject

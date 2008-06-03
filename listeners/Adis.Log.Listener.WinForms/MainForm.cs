@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -10,7 +11,7 @@ namespace Adis.Log.Listener.WinForms
 	public partial class MainForm : Form
 	{
 
-		public LogObjectList ListOfLogObjects;
+		private LogObjectList ListOfLogObjects;
 
 		public MainForm()
 		{
@@ -23,6 +24,21 @@ namespace Adis.Log.Listener.WinForms
 
 			filterSeverity.Items.AddRange(RequestFilter.SeverityRanks.Keys.ToArray());
 
+			KeepConnectionAlive.DetectedProblemWithConnection += new EventHandler<ExceptionEventArgs>(handleConnectionBroken);
+		}
+
+		private delegate void VoidBoolExceptionDelegate(bool connected, Exception e);
+
+		private void handleConnectionBroken(Object sender, ExceptionEventArgs e)
+		{
+			if (this.InvokeRequired)
+			{
+				this.Invoke(new VoidBoolExceptionDelegate(this.SetUiStatusByConnectedStatus), new Object[] { false, e.Exception });
+			}
+			else
+			{
+				SetUiStatusByConnectedStatus(false, e.Exception);
+			}
 		}
 
 		private void ConnectToListener()
@@ -45,7 +61,7 @@ namespace Adis.Log.Listener.WinForms
 				filterMessage.Enabled ? filterMessage.Text : null, filterMessageExactMatch.Checked);
 
 			listenerManager.StartServiceCompleted += new EventHandler<StartServiceEventArgs>(listenerManager_StartServiceCompleted);
-			listenerManager.StartServiceAsync();
+			listenerManager.StartServiceAsync(this);
 		}
 
 		protected override void OnClosed(EventArgs e)
@@ -54,21 +70,48 @@ namespace Adis.Log.Listener.WinForms
 			base.OnClosed(e);
 		}
 
-		void listenerManager_StartServiceCompleted(object sender, StartServiceEventArgs e)
+		private void listenerManager_StartServiceCompleted(object sender, StartServiceEventArgs e)
+		{
+			SetUiStatusByConnectedStatus(e.Succeeded, e.Exception);
+		}
+
+		/// <summary>
+		/// Sets the look of the UI to show whether the listener successfully connected or not
+		/// </summary>
+		/// <param name="succeeded"></param>
+		/// <param name="exception"></param>
+		public void SetUiStatusByConnectedStatus(bool connected, Exception exception)
 		{
 			progressBar1.Style = ProgressBarStyle.Continuous;
-			progressBar1.Value = progressBar1.Maximum;
-			if (e.Succeeded)
+			if (connected)
 			{
 				statusLabel.ForeColor = Color.Black;
+				progressBar1.Value = progressBar1.Maximum;
 				statusLabel.Text = "Listener connected successfully";
+				ErrorDetails.Text = "";
 			}
 			else
 			{
 				statusLabel.ForeColor = Color.Red;
-				statusLabel.Text = "Listener failed to connect sucessfully.";
-				ErrorDetails.Text = ((Object)e.Exception ?? "").ToString();
+				progressBar1.Value = progressBar1.Minimum;
+				statusLabel.Text = "Listener failed to connect successfully.";
+				if(exception != null)
+				{
+					ErrorDetails.Text = exception.ToString();
+				}
 			}
+		}
+
+		public void Add(LogTransportObject log)
+		{
+			ListOfLogObjects.Add(log);
+			ResetVirtualListSize();
+		}
+
+		public void AddRange(IEnumerable<LogTransportObject> collection)
+		{
+			ListOfLogObjects.AddRange(collection);
+			ResetVirtualListSize();
 		}
 
 		private void btnReconnect_Click(object sender, EventArgs e)
@@ -82,7 +125,7 @@ namespace Adis.Log.Listener.WinForms
 			base.OnClosing(e);
 		}
 
-		void listView1_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
+		private void listView1_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
 		{
 			if (e.ItemIndex < ListOfLogObjects.Count)
 			{
@@ -122,12 +165,6 @@ namespace Adis.Log.Listener.WinForms
 			}
 		}
 
-		public String StatusText
-		{
-			get { return statusLabel.Text; }
-			set { statusLabel.Text = value; }
-
-		}
 		delegate void UpdateListView();
 
 		private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -149,6 +186,7 @@ namespace Adis.Log.Listener.WinForms
 			}
 		}
 
+		#region LinkClicked event handlers
 		private void CategoryLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			ToggleFilterGroupEnabled(filterCategory, filterCategoryExactMatch);
@@ -188,6 +226,7 @@ namespace Adis.Log.Listener.WinForms
 		{
 			ToggleFilterGroupEnabled(filterMessage, filterMessageExactMatch);
 		}
+		#endregion
 
 		private void ToggleFilterGroupEnabled(Control textbox, Control checkbox)
 		{

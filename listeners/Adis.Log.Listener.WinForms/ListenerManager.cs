@@ -28,6 +28,12 @@ namespace Adis.Log.Listener.WinForms
 		private System.ComponentModel.BackgroundWorker bgWorker;
 		private RequestFilter requestFilter;
 
+		private MainForm MainForm { get; set; }
+
+		/// <summary>
+		/// Connects to the Listener server
+		/// </summary>
+		/// <returns></returns>
 		public bool StartService()
 		{
 			InstanceContext iContext;
@@ -35,7 +41,7 @@ namespace Adis.Log.Listener.WinForms
 			Disconnect();
 
 			bool success = false;
-			iContext = new InstanceContext(new Adis.Log.Listener.WinForms.ListenerCallback());
+			iContext = new InstanceContext(new Adis.Log.Listener.WinForms.ListenerCallback(MainForm));
 			lock (typeof(ListenerManager))
 			{
 				channel = new DuplexChannelFactory<IListenerContract>(iContext, _ListenerEndpointName);
@@ -83,12 +89,18 @@ namespace Adis.Log.Listener.WinForms
 					//we got "take" many records so skip that many next time
 					skip += take;
 
-					Program.mainForm.ListOfLogObjects.AddRange(logsReturned);
+					if (logsReturned != null)
+					{
+						MainForm.AddRange(logsReturned);
+					}
 
-				} while (logsReturned.Count == take);
+				} while (logsReturned != null && logsReturned.Count == take);
 			}
 		}
 
+		/// <summary>
+		/// Disconnects from the listener server
+		/// </summary>
 		private static void Disconnect()
 		{
 			if (channel != null && channel.State == CommunicationState.Opened)
@@ -96,25 +108,45 @@ namespace Adis.Log.Listener.WinForms
 				lock (_LockObject)
 				{
 					_ExpectedClose = true;
-					channel.Close();
-					_ExpectedClose = false;
+					try
+					{
+						channel.Close();
+					}
+					catch (CommunicationException)
+					{
+						//we have to allow for the possibility that the channel isn't actually open event though we got here through an if stmt that
+						//specifically asks that it is open. That's because the channel may not realise it is not open (probably faulted) until
+						//we call the Close() method.
+						//We don't actually need to do anything if we get this exception because we are trying to close the connection and it's already 
+						//effectively closed
+					}
+					finally
+					{
+						_ExpectedClose = false;
+					}
 				}
 			}
 		}
 
+		/// <summary>
+		/// handles our response to the channel being closed
+		/// </summary>
+		/// <remarks>We won't get this event called if the server closed the channel</remarks>
 		void channel_Closed(object sender, EventArgs e)
 		{
 			lock (_LockObject)
 			{
 				if (_ExpectedClose)
 				{
+					KeepConnectionAlive.StopKeepAliveThread();
 					return;
 				}
 			}
+			//try to reconnect to the server automatically
 			requestFilter.StartTime = DateTime.Now;			
 			if (System.Threading.Thread.CurrentThread.ManagedThreadId == Program.UiThreadId)
 			{
-				StartServiceAsync();
+				StartServiceAsync(MainForm);
 			}
 			else
 			{
@@ -151,19 +183,34 @@ namespace Adis.Log.Listener.WinForms
 			};
 		}
 
-		public void StartServiceAsync()
+		/// <summary>
+		/// connects to the listener server using a background thread
+		/// </summary>
+		/// <param name="mainForm"></param>
+		public void StartServiceAsync(MainForm mainForm)
 		{
+			MainForm = mainForm;
 			bgWorker = new System.ComponentModel.BackgroundWorker();
 			bgWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(bgWorker_RunWorkerCompleted);
 			bgWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(bgWorker_DoWork);
 			bgWorker.RunWorkerAsync();
 		}
 
+		/// <summary>
+		/// This is the method that will be run by the background thread
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		void bgWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
 		{
 			e.Result = StartService();
 		}
 
+		/// <summary>
+		/// bgWorker_RunWorkerCompleted will be called when the background thread completes
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		void bgWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
 		{
 			StartServiceEventArgs eventArgs;
@@ -180,6 +227,10 @@ namespace Adis.Log.Listener.WinForms
 			bgWorker = null;
 		}
 
+		/// <summary>
+		/// Generates a StartServiceCompleted event
+		/// </summary>
+		/// <param name="e"></param>
 		protected virtual void OnStartServiceCompleted(StartServiceEventArgs e)
 		{
 			if (StartServiceCompleted != null)
