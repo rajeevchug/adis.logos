@@ -93,6 +93,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="QueryableLogEventFilters.cs" />
     <Compile Include="ReporterImplementer.cs" />
     <Compile Include="ReporterService.cs" />
     <Compile Include="Repository.cs" />

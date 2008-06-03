@@ -58,6 +58,7 @@
     <Compile Include="DetailsView.Designer.cs">
       <DependentUpon>DetailsView.cs</DependentUpon>
     </Compile>
+    <Compile Include="ExceptionEventArgs.cs" />
     <Compile Include="KeepConnectionAlive.cs" />
     <Compile Include="MyListView.cs">
       <SubType>Component</SubType>

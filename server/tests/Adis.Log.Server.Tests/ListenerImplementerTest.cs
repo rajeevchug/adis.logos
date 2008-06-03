@@ -70,42 +70,83 @@ namespace Adis.Log.server.Tests
 		///A test for InitialiseLink
 		///</summary>
 		[TestMethod()]
-		public void InitialiseLinkTest()
+		public void InitialiseLink_Successfully_Adds_New_Listener_To_List()
 		{
-			ListenerImplementer target = new ListenerImplementer(); 
+			ListenerImplementer target = new ListenerImplementer();
 			RequestFilter requestFilter = new RequestFilter();
 			Uri remoteAddressUri = new Uri("http://www.dummyUri.com");
-			IContextChannel channel = new ContextChannelMock();
-			IListenerCallbackContract callbackContract = new ListenerCallbackContractMock();
-			List<ListenerImplementer.ListenerInfo> listenerList = new List<ListenerImplementer.ListenerInfo>();
+			IContextChannel channelMock = new Moq.Mock<IContextChannel>(Moq.MockBehavior.Loose).Object;
+			IListenerCallbackContract callbackMock = new Moq.Mock<IListenerCallbackContract>().Object;
+
+			ListenerImplementer.ListenerInfo newListener = new ListenerImplementer.ListenerInfo()
+			{
+				callback = callbackMock,
+				filter = requestFilter,
+				remoteAddress = remoteAddressUri
+			};
+
+			Moq.Mock<IList<ListenerImplementer.ListenerInfo>> listenerListMock = new Moq.Mock<IList<ListenerImplementer.ListenerInfo>>();
+			listenerListMock.Expect(list => list.Add(newListener)).AtMostOnce();
+
 			bool expected = true;
 			bool actual;
-			actual = target.InitialiseLink(requestFilter, callbackContract, remoteAddressUri, channel, listenerList);
+			actual = target.InitialiseLink(requestFilter, callbackMock, remoteAddressUri, channelMock, listenerListMock.Object);
 			Assert.AreEqual(expected, actual);
-			Assert.AreEqual(1, listenerList.Count, "listenerList contains the wrong number of objects");
 		}
 
 		/// <summary>
 		///A test for NotifyListeners
 		///</summary>
 		[TestMethod()]
-		public void NotifyListenersTest()
+		public void NotifyListeners_Calls_Notify_Once()
 		{
-			LogTransportObject logObject = new LogTransportObject(); 
+			LogTransportObject logObject = new LogTransportObject();
+
+			Moq.Mock<IListenerCallbackContract> callbackMock = new Moq.Mock<IListenerCallbackContract>();
+			callbackMock.Expect(callback => callback.Notify(logObject)).AtMostOnce();
 
 			//set up a dummy listener that we can notify
 			List<ListenerImplementer.ListenerInfo> listenerList = new List<ListenerImplementer.ListenerInfo>();
 			listenerList.Add(new ListenerImplementer.ListenerInfo()
 			{
 				remoteAddress = new Uri("http://www.dummyUri.com"),
-				callback = new ListenerCallbackContractMock(),
+				callback = callbackMock.Object,
 				filter = new RequestFilter()
 			});
 
 			ListenerImplementer.NotifyListeners(logObject, listenerList);
-			Assert.IsTrue(((ListenerCallbackContractMock)listenerList[0].callback).NotificationComplete, 
-				"the listener's Notify() method wasn't called");
 		}
 
+		[TestMethod]
+		public void RemoveBadListeners_Removes_One_Listener_Only()
+		{
+			List<ListenerImplementer.ListenerInfo> listToRemove = new List<ListenerImplementer.ListenerInfo>();
+			List<ListenerImplementer.ListenerInfo> masterList = new List<ListenerImplementer.ListenerInfo>();
+
+			IListenerCallbackContract callback = new Moq.Mock<IListenerCallbackContract>().Object;
+
+			//populate the master list with 2 listeners
+			masterList.Add(new ListenerImplementer.ListenerInfo()
+			{
+				remoteAddress = new Uri("http://www.dummyUriOne.com"),
+				callback = callback,
+				filter = new RequestFilter()
+			});
+			masterList.Add(new ListenerImplementer.ListenerInfo()
+			{
+				remoteAddress = new Uri("http://www.dummyUriTwo.com"),
+				callback = callback,
+				filter = new RequestFilter()
+			});
+
+			//add one of the master's listeners in the remove list
+			listToRemove.Add(masterList[0]);
+
+			ListenerImplementer_Accessor.RemoveBadListeners(masterList, listToRemove);
+
+			Assert.AreEqual(1, masterList.Count);
+
+
+		}
 	}
 }

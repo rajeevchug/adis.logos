@@ -68,256 +68,79 @@ namespace Adis.Log.server.Tests
 		#endregion
 
 
-		/// <summary>
-		///A test for GetRecords
-		///</summary>
-		[TestMethod()]
-		public void GetRecordsTest()
+	  [TestMethod]
+		public void GetRecords_filters_on_all_fields()
 		{
-			IRepository repository = new RepositoryMock();
-			Uri remoteAddress = new Uri("http://www.DummyUri.com"); ;
-			//Try to get the 1st 10 records should give us 5 since that's all there are
-			{
-				RequestFilter filter = new RequestFilter();
-				List<LogTransportObject> actual;
-				actual = ReporterImplementer.GetRecords(filter, 0, 10, repository, remoteAddress, false);
-				Assert.AreEqual(5, actual.Count, "Getting 10 records should give us the complete set (5 records)");
-			}
-			//Try to get 3 records, skipping the first 3 should give us 2
-			{
-				RequestFilter filter = new RequestFilter();
-				List<LogTransportObject> actual;
-				actual = ReporterImplementer.GetRecords(filter, 3, 3, repository, remoteAddress, false);
-				Assert.AreEqual(2, actual.Count, "Try to get 3 records, skipping the first 3 should give us 2");
-			}
-			//filter on application starts with "123" should give us 3 records
-			{
-				RequestFilter filter = new RequestFilter() { Application = "123", ApplicationExactMatch=false };
-				List<LogTransportObject> actual;
-				actual = ReporterImplementer.GetRecords(filter, 0, 10, repository, remoteAddress, false);
-				Assert.AreEqual(3, actual.Count, "filter on application starts with \"123\" should give us 3 records");
-			}
-			//filter on application starts with "123" with an exact match should give us 3 records
-			{
-				RequestFilter filter = new RequestFilter() { Application = "123", ApplicationExactMatch=true };
-				List<LogTransportObject> actual;
-				actual = ReporterImplementer.GetRecords(filter, 0, 10, repository, remoteAddress, false);
+			int result = -1;
+			DateTime aFixedTimeStamp = DateTime.Now;
+			Moq.Mock<IRepository> repositoryMock = new Moq.Mock<IRepository>();
+			Uri remoteAddress = new Uri("http://www.DummyUri.com");
+			List<LogEvent> listOfLogEvents = new List<LogEvent>();
+			listOfLogEvents.Add(new LogEvent() { Application = "123", EventID=1 });
+			listOfLogEvents.Add(new LogEvent() { Category = "123" });
+			listOfLogEvents.Add(new LogEvent() { Instance = "123" });
+			listOfLogEvents.Add(new LogEvent() { Machine = "123" });
+			listOfLogEvents.Add(new LogEvent() { User = "123" });
+			listOfLogEvents.Add(new LogEvent() { Severity = "warn" });
+			listOfLogEvents.Add(new LogEvent() { Message = "123" });
+			listOfLogEvents.Add(new LogEvent() { TimeLogged = aFixedTimeStamp });
+			listOfLogEvents.Add(new LogEvent() { EventTime = aFixedTimeStamp });
 
-				Assert.AreEqual(1, actual.Count, "filter on application starts with \"123\" with exact match should give us 3 records");
+			repositoryMock.Expect(rep => rep.GetAllLogLogEvents()).Returns(listOfLogEvents.AsQueryable());
+
+			RequestFilter filter = null;
+			{
+				filter = new RequestFilter() { Application = "123" };
+				result = ReporterImplementer.GetRecords(filter, 0, 10, repositoryMock.Object, remoteAddress, false).Count;
+				Assert.AreEqual(1, result, "filter on application field failed");
+			}
+			{
+				filter = new RequestFilter() { Category = "123" };
+				result = ReporterImplementer.GetRecords(filter, 0, 10, repositoryMock.Object, remoteAddress, false).Count;
+				Assert.AreEqual(1, result, "filter on Category field failed");
+			}
+			{
+				filter = new RequestFilter() { Instance = "123" };
+				result = ReporterImplementer.GetRecords(filter, 0, 10, repositoryMock.Object, remoteAddress, false).Count;
+				Assert.AreEqual(1, result, "filter on Instance field failed");
+			}
+			{
+				filter = new RequestFilter() { Machine = "123" };
+				result = ReporterImplementer.GetRecords(filter, 0, 10, repositoryMock.Object, remoteAddress, false).Count;
+				Assert.AreEqual(1, result, "filter on Machine field failed");
+			}
+			{
+				filter = new RequestFilter() { User = "123" };
+				result = ReporterImplementer.GetRecords(filter, 0, 10, repositoryMock.Object, remoteAddress, false).Count;
+				Assert.AreEqual(1, result, "filter on User field failed");
+			}
+			{
+				filter = new RequestFilter() { Message = "123" };
+				result = ReporterImplementer.GetRecords(filter, 0, 10, repositoryMock.Object, remoteAddress, false).Count;
+				Assert.AreEqual(1, result, "filter on Message field failed");
+			}
+			{
+				filter = new RequestFilter() { Severity = "warn" };
+				result = ReporterImplementer.GetRecords(filter, 0, 10, repositoryMock.Object, remoteAddress, false).Count;
+				Assert.AreEqual(1, result, "filter on Severity field failed");
+			}
+			{
+				filter = new RequestFilter() { StartTime = aFixedTimeStamp.AddMinutes(-10) };
+				result = ReporterImplementer.GetRecords(filter, 0, 10, repositoryMock.Object, remoteAddress, false).Count;
+				Assert.AreEqual(1, result, "filter on EventTime field failed");
+			}
+			{
+				filter = new RequestFilter() { StartTime = aFixedTimeStamp.AddMinutes(-10) };
+				result = ReporterImplementer.GetRecords(filter, 0, 10, repositoryMock.Object, remoteAddress, true).Count;
+				Assert.AreEqual(1, result, "filter on TimeLogged field failed");
+			}
+			{
+				filter = new RequestFilter() { Id = 1 };
+				result = ReporterImplementer.GetRecords(filter, 0, 10, repositoryMock.Object, remoteAddress, true).Count;
+				Assert.AreEqual(1, result, "filter on Id failed");
 			}
 
-			//Assert.Inconclusive("Verify the correctness of this test method.");
 		}
 
-		/// <summary>
-		///A test for AddUserFilter
-		///</summary>
-		[TestMethod()]
-		[DeploymentItem("Adis.Log.Server.dll")]
-		public void AddUserFilterTest()
-		{
-			IRepository repository = new RepositoryMock();
-			IQueryable<LogEvent> logEvents = repository.GetAllLogLogEvents();
-			RequestFilter filter = new RequestFilter() { User = "1234" };
-			
-			{
-				//first test: "1234" and exactMatch=false should return 2 records ("1234" + "12345")
-				filter.UserExactMatch = false;
-				IQueryable<LogEvent> actual;
-				actual = ReporterImplementer_Accessor.AddUserFilter(filter, logEvents);
-
-				Assert.AreEqual(2, actual.Count(), "User=1234 should return 2 records");
-			}
-			{
-				//second test: "1234" and exactMatch=true should return 1 records ("1234")
-				filter.UserExactMatch = true;
-				IQueryable<LogEvent> actual;
-				actual = ReporterImplementer_Accessor.AddUserFilter(filter, logEvents);
-
-				Assert.AreEqual(1, actual.Count(), "User=1234 EXACT should return 1 records");
-			}
-		}
-
-		/// <summary>
-		///A test for AddEventTimeFilter
-		///</summary>
-		[TestMethod()]
-		[DeploymentItem("Adis.Log.Server.dll")]
-		public void AddEventTimeFilterTest()
-		{
-			IRepository repository = new RepositoryMock();
-			IQueryable<LogEvent> logEvents = repository.GetAllLogLogEvents();
-			//filter.StartTime < [first record's EventTime] so should be getting all records
-			{
-				RequestFilter filter = new RequestFilter() { StartTime = RepositoryMock._PointInTime };
-				IQueryable<LogEvent> actual = ReporterImplementer_Accessor.AddEventTimeFilter(filter, logEvents);
-				Assert.AreEqual(5, actual.Count(), "filter.StartTime < [first record's EventTime] so should be getting all records");
-			}
-			//filter.StartTime == [3rd record's EventTime] so should be getting 3 records
-			{
-				RequestFilter filter = new RequestFilter() { StartTime = RepositoryMock._PointInTime.AddMinutes(3) };
-				IQueryable<LogEvent> actual = ReporterImplementer_Accessor.AddEventTimeFilter(filter, logEvents);
-				Assert.AreEqual(3, actual.Count(), "filter.StartTime == [3rd record's EventTime] so should be getting 3 records");
-			}
-			//filter.StartTime < [first record's EventTime], filter.EndTime < [4th records EventTime] so should return 1st to 3rd records
-			{
-				RequestFilter filter = new RequestFilter()
-				{
-					StartTime = RepositoryMock._PointInTime,
-					EndTime = RepositoryMock._PointInTime.AddSeconds(210) //3.5 minutes 
-				};
-				IQueryable<LogEvent> actual = ReporterImplementer_Accessor.AddEventTimeFilter(filter, logEvents);
-				Assert.AreEqual(3, actual.Count(), "filter.StartTime < [first record's EventTime], filter.EndTime < [4th records EventTime] so should return 1st to 3rd records");
-			}
-		}
-
-		/// <summary>
-		///A test for AddEventTimeFilter
-		///</summary>
-		[TestMethod()]
-		[DeploymentItem("Adis.Log.Server.dll")]
-		public void AddTimeLoggedFilterTest()
-		{
-			IRepository repository = new RepositoryMock();
-			IQueryable<LogEvent> logEvents = repository.GetAllLogLogEvents();
-			//filter.StartTime < [first record's TimeLogged] so should be getting all records
-			{
-				RequestFilter filter = new RequestFilter() { StartTime = RepositoryMock._PointInTime };
-				IQueryable<LogEvent> actual = ReporterImplementer_Accessor.AddTimeLoggedFilter(filter, logEvents);
-				Assert.AreEqual(5, actual.Count(), "filter.StartTime < [first record's TimeLogged] so should be getting all records");
-			}
-			//filter.StartTime == [3rd record's TimeLogged] so should be getting 3 records
-			{
-				RequestFilter filter = new RequestFilter() { StartTime = RepositoryMock._PointInTime.AddMinutes(3) };
-				IQueryable<LogEvent> actual = ReporterImplementer_Accessor.AddTimeLoggedFilter(filter, logEvents);
-				Assert.AreEqual(3, actual.Count(), "filter.StartTime == [3rd record's TimeLogged] so should be getting 3 records");
-			}
-			//filter.StartTime < [first record's TimeLogged], filter.EndTime < [4th records TimeLogged] so should return 1st to 3rd records
-			{
-				RequestFilter filter = new RequestFilter()
-				{
-					StartTime = RepositoryMock._PointInTime,
-					EndTime = RepositoryMock._PointInTime.AddSeconds(210) //3.5 minutes 
-				};
-				IQueryable<LogEvent> actual = ReporterImplementer_Accessor.AddTimeLoggedFilter(filter, logEvents);
-				Assert.AreEqual(3, actual.Count(), "filter.StartTime < [first record's TimeLogged], filter.EndTime < [4th records TimeLogged] so should return 1st to 3rd records");
-			}
-		}
-
-		/// <summary>
-		///A test for AddMachineFilter
-		///</summary>
-		[TestMethod()]
-		[DeploymentItem("Adis.Log.Server.dll")]
-		public void AddMachineFilterTest()
-		{
-			IRepository repository = new RepositoryMock();
-			IQueryable<LogEvent> logEvents = repository.GetAllLogLogEvents();
-			RequestFilter filter = new RequestFilter() { Machine = "1234" };
-
-			{
-				//first test: "1234" and exactMatch=false should return 2 records ("1234" + "12345")
-				filter.MachineExactMatch = false;
-				IQueryable<LogEvent> actual;
-				actual = ReporterImplementer_Accessor.AddMachineFilter(filter, logEvents);
-
-				Assert.AreEqual(2, actual.Count(), "Machine=1234 should return 2 records");
-			}
-			{
-				//second test: "1234" and exactMatch=true should return 1 records ("1234")
-				filter.MachineExactMatch = true;
-				IQueryable<LogEvent> actual;
-				actual = ReporterImplementer_Accessor.AddMachineFilter(filter, logEvents);
-
-				Assert.AreEqual(1, actual.Count(), "Machine=1234 EXACT should return 1 records");
-			}
-		}
-
-		/// <summary>
-		///A test for AddInstanceFilter
-		///</summary>
-		[TestMethod()]
-		[DeploymentItem("Adis.Log.Server.dll")]
-		public void AddInstanceFilterTest()
-		{
-			IRepository repository = new RepositoryMock();
-			IQueryable<LogEvent> logEvents = repository.GetAllLogLogEvents();
-			RequestFilter filter = new RequestFilter() { Instance = "1234" };
-
-			{
-				//first test: "1234" and exactMatch=false should return 2 records ("1234" + "12345")
-				filter.InstanceExactMatch = false;
-				IQueryable<LogEvent> actual;
-				actual = ReporterImplementer_Accessor.AddInstanceFilter(filter, logEvents);
-
-				Assert.AreEqual(2, actual.Count(), "Instance=1234 should return 2 records");
-			}
-			{
-				//second test: "1234" and exactMatch=true should return 1 records ("1234")
-				filter.InstanceExactMatch = true;
-				IQueryable<LogEvent> actual;
-				actual = ReporterImplementer_Accessor.AddInstanceFilter(filter, logEvents);
-
-				Assert.AreEqual(1, actual.Count(), "Instance=1234 EXACT should return 1 records");
-			}
-		}
-
-		/// <summary>
-		///A test for AddCategoryFilter
-		///</summary>
-		[TestMethod()]
-		[DeploymentItem("Adis.Log.Server.dll")]
-		public void AddCategoryFilterTest()
-		{
-			IRepository repository = new RepositoryMock();
-			IQueryable<LogEvent> logEvents = repository.GetAllLogLogEvents();
-			RequestFilter filter = new RequestFilter() { Category = "1234" };
-
-			{
-				//first test: "1234" and exactMatch=false should return 2 records ("1234" + "12345")
-				filter.CategoryExactMatch = false;
-				IQueryable<LogEvent> actual;
-				actual = ReporterImplementer_Accessor.AddCategoryFilter(filter, logEvents);
-
-				Assert.AreEqual(2, actual.Count(), "Category=1234 should return 2 records");
-			}
-			{
-				//second test: "1234" and exactMatch=true should return 1 records ("1234")
-				filter.CategoryExactMatch = true;
-				IQueryable<LogEvent> actual;
-				actual = ReporterImplementer_Accessor.AddCategoryFilter(filter, logEvents);
-
-				Assert.AreEqual(1, actual.Count(), "Category=1234 EXACT should return 1 records");
-			}
-		}
-
-		/// <summary>
-		///A test for AddApplicationFilter
-		///</summary>
-		[TestMethod()]
-		[DeploymentItem("Adis.Log.Server.dll")]
-		public void AddApplicationFilterTest()
-		{
-			IRepository repository = new RepositoryMock();
-			IQueryable<LogEvent> logEvents = repository.GetAllLogLogEvents();
-			RequestFilter filter = new RequestFilter() { Application = "1234" };
-
-			{
-				//first test: "1234" and exactMatch=false should return 2 records ("1234" + "12345")
-				filter.ApplicationExactMatch = false;
-				IQueryable<LogEvent> actual;
-				actual = ReporterImplementer_Accessor.AddApplicationFilter(filter, logEvents);
-
-				Assert.AreEqual(2, actual.Count(), "Application=1234 should return 2 records");
-			}
-			{
-				//second test: "1234" and exactMatch=true should return 1 records ("1234")
-				filter.ApplicationExactMatch = true;
-				IQueryable<LogEvent> actual;
-				actual = ReporterImplementer_Accessor.AddApplicationFilter(filter, logEvents);
-
-				Assert.AreEqual(1, actual.Count(), "Application=1234 EXACT should return 1 records");
-			}
-		}
 	}
 }

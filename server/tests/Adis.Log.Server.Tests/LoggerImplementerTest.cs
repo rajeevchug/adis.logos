@@ -84,5 +84,22 @@ namespace Adis.Log.server.Tests
 			Assert.AreEqual(6, repository.GetAllLogLogEvents().Count(), "new log hasn't been inserted into repository");
 		}
 
+		[TestMethod]
+		public void InsertNewLogTestUseMoq()
+		{
+			DateTime loggedTime = DateTime.Now;
+			LoggerImplementer target = new LoggerImplementer();
+			LogTransportObject logObject = new LogTransportObject();
+
+			LogEvent logevent = new LogEvent();
+
+			Moq.Mock<IRepository> repositoryMock = new Moq.Mock<IRepository>();
+			repositoryMock.Expect(rep => rep.InsertIntoDatabase(logevent));
+
+			bool expected = true;
+			bool actual;
+			actual = target.InsertNewLog(logObject, repositoryMock.Object);
+			Assert.AreEqual(expected, actual, "InsertNewLog() failed");
+		}
 	}
 }
