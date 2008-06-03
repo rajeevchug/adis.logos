@@ -65,6 +65,9 @@ namespace Adis.Log.Contract
 
 		[DataMember]
 		public bool MachineExactMatch { get; set; }
+
+		[DataMember]
+		public bool MessageExactMatch { get; set; }
 		#endregion
 
 		#region non DataMemeber operations
