@@ -49,6 +49,37 @@ namespace Adis.Log.Server
 		}
 
 
+    /// <summary>
+    /// Returns number of Log events from the database according to the filtering required
+    /// </summary>
+    /// <param name="filter">allows you to filter the results returned to just those you are interested in</param>
+    /// <returns>an int with the number of matching events</returns>
+    public int GetCount(RequestFilter filter)
+    {
+      ILog internalLog = LogManager.GetLogger(typeof(ReporterImplementer));
+      try
+      {
+        Uri uri = null;
+        if (OperationContext.Current != null &&
+          OperationContext.Current.Channel != null &&
+          OperationContext.Current.Channel.RemoteAddress != null &&
+          OperationContext.Current.Channel.RemoteAddress.Uri != null)
+        {
+          uri = OperationContext.Current.Channel.RemoteAddress.Uri;
+        }
+        else
+        {
+          uri = new Uri("http://invalidUri");
+        }
+        return ReporterImplementer.GetCount(filter, Repository.RepositoryInstance, uri, false);
+      }
+      catch (Exception e)
+      {
+        internalLog.Error("ReporterService.GetCount() got an error", e);
+        throw;
+      }
+    }
+
 		#endregion
 	}
 }

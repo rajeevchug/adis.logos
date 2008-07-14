@@ -454,6 +454,9 @@ public interface IReporterContract
     
     [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IReporterContract/GetRecords", ReplyAction="http://tempuri.org/IReporterContract/GetRecordsResponse")]
     Adis.Log.Contract.Log[] GetRecords(Adis.Log.Contract.RequestFilter filter, int skipFirst, int maxRecords);
+    
+    [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IReporterContract/GetCount", ReplyAction="http://tempuri.org/IReporterContract/GetCountResponse")]
+    int GetCount(Adis.Log.Contract.RequestFilter filter);
 }
 
 [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
@@ -493,5 +496,10 @@ public partial class ReporterContractClient : System.ServiceModel.ClientBase<IRe
     public Adis.Log.Contract.Log[] GetRecords(Adis.Log.Contract.RequestFilter filter, int skipFirst, int maxRecords)
     {
         return base.Channel.GetRecords(filter, skipFirst, maxRecords);
+    }
+    
+    public int GetCount(Adis.Log.Contract.RequestFilter filter)
+    {
+        return base.Channel.GetCount(filter);
     }
 }

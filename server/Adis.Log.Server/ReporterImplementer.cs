@@ -66,5 +66,38 @@ namespace Adis.Log.Server
 			return returnVal;
 		}
 
-	}
+    /// <summary>
+    /// Get the number of matching Log events
+    /// </summary>
+    /// <param name="filter"></param>
+    /// <returns></returns>
+    public static int GetCount(RequestFilter filter, IRepository repository, Uri remoteAddress, bool useTimeLoggedNotEventTime)
+    {
+      ILog internalLog = LogManager.GetLogger(typeof(ReporterImplementer));
+      IQueryable<LogEvent> logEvents = repository.GetAllLogLogEvents();
+
+      logEvents = logEvents.WithId(filter.Id)
+        .WithApplication(filter.Application, filter.ApplicationExactMatch)
+        .WithCategory(filter.Category, filter.CategoryExactMatch)
+        .WithInstance(filter.Instance, filter.InstanceExactMatch)
+        .WithMachine(filter.Machine, filter.MachineExactMatch)
+        .WithUser(filter.User, filter.UserExactMatch)
+        .WithSeverity(filter.Severity)
+        .WithMessage(filter.Message, filter.MessageExactMatch)
+        ;
+
+      if (useTimeLoggedNotEventTime)
+      {
+        logEvents = logEvents.WithTimeLoggedInRange(filter.StartTime, filter.EndTime);
+      }
+      else
+      {
+        logEvents = logEvents.WithEventTimeInRange(filter.StartTime, filter.EndTime);
+      }
+
+      int count = logEvents.Count();
+      internalLog.DebugFormat("GetCount returning {0} to reporter client (remote address {1})", count, remoteAddress);
+      return count;
+    }
+  }
 }

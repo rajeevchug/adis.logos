@@ -14,6 +14,9 @@ namespace Adis.Log.Contract
 		[OperationContract]
 		List<LogTransportObject> GetRecords(RequestFilter filter,  int skipFirst, int maxRecords);
 
-	}
+    [OperationContract]
+    int GetCount(RequestFilter filter);
+
+  }
 
 }

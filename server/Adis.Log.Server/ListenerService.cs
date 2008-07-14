@@ -79,7 +79,21 @@ namespace Adis.Log.Server
 			return null;
 		}
 
-		public void KeepAlive()
+    public int GetCount(RequestFilter filter)
+    {
+      try
+      {
+        return ReporterImplementer.GetCount(filter, Repository.RepositoryInstance, OperationContext.Current.Channel.RemoteAddress.Uri, true);
+      }
+      catch (Exception e)
+      {
+        _InternalLog.Error(String.Format("Exception raised in GetCount() for listener: {0}",
+          OperationContext.Current.Channel.RemoteAddress.Uri), e);
+      }
+      return -1;
+    }
+
+    public void KeepAlive()
 		{
 			_InternalLog.DebugFormat("got keep alive message from listener:{0}", OperationContext.Current.Channel.RemoteAddress.Uri);
 			return;
