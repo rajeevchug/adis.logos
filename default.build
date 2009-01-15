@@ -29,7 +29,20 @@
 	</target>
 
 	<target name="build" >
-		<msbuild project="Adis.Log.sln" verbosity="minimal" />
+		<foreach item="File" property="projectFile">
+			<in>
+				<items>
+					<include name="**Adis.Log.Contract.csproj"/>
+					<include name="**.csproj"/>
+					<exclude name="**test**"/>
+				</items>
+			</in>
+			<do>
+				<echo message="-----------------------------------------------------------------------------"/>
+				<msbuild project="${projectFile}" verbosity="normal" />
+			</do>
+		</foreach>
+		<!--<msbuild project="Adis.Log.sln" verbosity="minimal" />-->
 	</target>
 
 	<target name="performtests">
@@ -56,7 +69,34 @@
 	</target>
 
 	<target name="package">
+		<if test="${not directory::exists( './Deploy' )}">
+			<mkdir dir="Deploy" />
+		</if>
 
+		<call target="useLiveConfigFiles"/>
+
+		<zip zipfile="./Deploy/Adis.log.Listener.Winforms.zip">
+			<fileset basedir="./listeners/Adis.log.Listener.Winforms/bin/${configuration}">
+				<include name="**"/>
+			</fileset>
+		</zip>
+
+		<zip zipfile="./Deploy/Adis.log.Server.zip">
+			<fileset basedir="./server/Adis.log.Server">
+				<include name="**/*" />
+				<exclude name="**/obj/**" />
+				<exclude name="**/_vti_*/*" />
+				<exclude name="**/Web References/**" />
+				<exclude name="**/*.csproj" />
+				<exclude name="**/*.csproj.webinfo" />
+				<exclude name="**/*.cs" />
+				<exclude name="**/*.resx" />
+				<exclude name="**/*.txt" />
+				<exclude name="**/logfile*"/>
+				<exclude name="**/*dbml*"/>
+			</fileset>
+		</zip>
+		<call target="useDevConfigFiles"/>
 	</target>
 
 	<target name="useLiveConfigFiles">
