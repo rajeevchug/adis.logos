@@ -1,0 +1,80 @@
+﻿p
+{
+	margin:0 0 0 0;
+	padding:0 0 0 0;
+}
+
+.extra_info
+{
+	
+}
+
+pre
+{
+	word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+.error_message
+{
+	color: White;
+	background-color:Red;
+}
+
+.log_item
+{
+	padding: 2px 4px 2px 4px;
+	margin: 0px 0px 5px 0px;
+	border:solid 1px black;
+}
+.log_item .message
+{
+ font-weight:bold;
+}
+
+.log_item>table
+{
+	table-layout:fixed;
+}
+.severity_FATAL
+{
+	background-color: #BBBBBB;
+}
+
+.severity_ERROR
+{
+	background-color: #FFBBBB;
+}
+
+.severity_WARN
+{
+	background-color: #CCCCFF;
+}
+
+.severity_INFO
+{
+	background-color: #DDFFDD;
+}
+
+.severity_DEBUG
+{
+	background-color: #FFFFFF;
+}
+
+
+.pager
+{
+	text-align: center;
+	margin: 5px 0px 5px 0px;
+	font-size: x-large;
+}
+
+.pager_item
+{
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.current_page
+{
+	font-weight:bold;
+}
