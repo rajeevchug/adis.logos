@@ -91,25 +91,16 @@
     </Compile>
     <Compile Include="Helpers\AppHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Providers\ICacheProvider.cs" />
+    <Compile Include="Providers\WebCacheProvider.cs" />
     <Compile Include="ViewData\ViewData.cs" />
     <Compile Include="ViewData\FilterBarViewData.cs" />
     <Compile Include="ViewData\ListViewData.cs" />
-    <Compile Include="Views\Shared\Globals.ascx.cs">
-      <DependentUpon>Globals.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
-    <Content Include="Views\Shared\RenderPortletControl.aspx" />
-    <Content Include="Views\Shared\Error.aspx" />
-    <Content Include="Views\Shared\Globals.ascx" />
-    <Content Include="Views\Shared\RenderPageControl.aspx" />
-    <Content Include="Views\Shared\RenderPopupWindow.aspx" />
-    <Content Include="Views\Shared\RenderRawControl.aspx" />
     <Content Include="Web.config" />
-    <Content Include="Views\Home\Start.aspx" />
     <Content Include="Views\Web.config" />
   </ItemGroup>
   <ItemGroup>
