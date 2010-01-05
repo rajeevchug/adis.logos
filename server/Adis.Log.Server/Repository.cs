@@ -15,6 +15,7 @@ namespace Adis.Log.Server
 {
 	public class Repository : IRepository
 	{
+		private static string _ConnectionString;
 		private static IRepository _RepositoryInstance = new Repository();
 		
 		public static IRepository RepositoryInstance
@@ -24,13 +25,20 @@ namespace Adis.Log.Server
 
 		private Repository()
 		{
+			_ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["DataSourceConnectionString"] == null ?
+				"" : System.Configuration.ConfigurationManager.ConnectionStrings["DataSourceConnectionString"].ConnectionString;
+		}
+
+		public Repository(string connectionString)
+		{
+			_ConnectionString = connectionString;
 		}
 
 		#region IRepository Members
 
 		public IQueryable<LogEvent> GetAllLogLogEvents()
 		{
-			LoggerDataContext dbContext = new LoggerDataContext();
+			LoggerDataContext dbContext = new LoggerDataContext(_ConnectionString);
 			{
 				return from le in dbContext.LogEvents
 							 select le;
@@ -45,7 +53,7 @@ namespace Adis.Log.Server
 
 		public void InsertIntoDatabase(LogEvent entity)
 		{
-			using (LoggerDataContext dbContext = new LoggerDataContext())
+			using (LoggerDataContext dbContext = new LoggerDataContext(_ConnectionString))
 			{
 				dbContext.LogEvents.InsertOnSubmit(entity);
 				dbContext.SubmitChanges();
