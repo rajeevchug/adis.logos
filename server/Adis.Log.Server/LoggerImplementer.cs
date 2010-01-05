@@ -7,7 +7,7 @@ using log4net;
 
 namespace Adis.Log.Server
 {
-	internal class LoggerImplementer
+	public class LoggerImplementer
 	{
 		/// <summary>
 		/// Inserts a new logObject into the database
