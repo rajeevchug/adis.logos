@@ -44,7 +44,7 @@ public partial class ReporterContractClient : System.ServiceModel.ClientBase<IRe
 			return base.Channel.GetCategoryList();
 		}
 
-		public IEnumerable<string> GetApplicationList()
+		public Dictionary<string,  IEnumerable<string>> GetApplicationList()
 		{
 			return base.Channel.GetApplicationList();
 		}

@@ -64,7 +64,7 @@ namespace Adis.Log.Server
 		}
 
 
-		public List<LogTransportObject> GetRecords(RequestFilter filter, int skipFirst, int maxRecords)
+		public IEnumerable<LogTransportObject> GetRecords(RequestFilter filter, int skipFirst, int maxRecords)
 		{
 			try
 			{
@@ -93,12 +93,41 @@ namespace Adis.Log.Server
       return -1;
     }
 
-    public void KeepAlive()
+		public IEnumerable<string> GetCategoryList()
+		{
+			try
+			{
+				return ReporterImplementer.GetCategoryList(Repository.RepositoryInstance, OperationContext.Current.Channel.RemoteAddress.Uri);
+			}
+			catch (Exception e)
+			{
+				_InternalLog.Error(String.Format("Exception raised in GetCategoryList() for listener: {0}",
+					OperationContext.Current.Channel.RemoteAddress.Uri), e);
+			}
+			return null;
+		}
+
+		public Dictionary<string, IEnumerable<string>> GetApplicationList()
+		{
+			try
+			{
+				return ReporterImplementer.GetApplicationList(Repository.RepositoryInstance, OperationContext.Current.Channel.RemoteAddress.Uri);
+			}
+			catch (Exception e)
+			{
+				_InternalLog.Error(String.Format("Exception raised in GetApplicationList() for listener: {0}",
+					OperationContext.Current.Channel.RemoteAddress.Uri), e);
+			}
+			return null;
+		}
+		
+		public void KeepAlive()
 		{
 			_InternalLog.DebugFormat("got keep alive message from listener:{0}", OperationContext.Current.Channel.RemoteAddress.Uri);
 			return;
 		}
 
 		#endregion
+
 	}
 }

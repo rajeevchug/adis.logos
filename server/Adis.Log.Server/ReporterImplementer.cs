@@ -99,5 +99,28 @@ namespace Adis.Log.Server
       internalLog.DebugFormat("GetCount returning {0} to reporter client (remote address {1})", count, remoteAddress);
       return count;
     }
-  }
+
+		public static IEnumerable<string> GetCategoryList(IRepository repository, Uri remoteAddress)
+		{
+			ILog internalLog = LogManager.GetLogger(typeof(ReporterImplementer));
+			var categories = repository.GetAllLogLogEvents().Select(c => c.Category).Distinct().ToList();
+
+			internalLog.DebugFormat("supplying {0} records to reporter client (remote address {1})", categories.Count,
+				remoteAddress);
+			return categories;
+		}
+
+		public static Dictionary<string, IEnumerable<string>> GetApplicationList(IRepository repository, Uri remoteAddress)
+		{
+			ILog internalLog = LogManager.GetLogger(typeof(ReporterImplementer));
+			//var applications = repository.GetAllLogLogEvents().Select(c => c.Application).Distinct().ToList();
+			var applications = (from log in repository.GetAllLogLogEvents()
+													group log by log.Category
+												 ).ToDictionary(c => c.Key, c => (IEnumerable<string>)c.Select(d => d.Application).Distinct().ToList());
+
+			internalLog.DebugFormat("supplying {0} records to reporter client (remote address {1})", applications.Count,
+				remoteAddress);
+			return applications;
+		}
+	}
 }
