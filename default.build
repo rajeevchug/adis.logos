@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="Venus Client" default="rebuild">
+<project name="Log" default="rebuild">
 	<loadtasks assembly="${nant::get-base-directory()}\Nant.Contrib.Tasks.dll"/>
 
 	<include buildfile="default.build.MailSettings.include"/>	
@@ -42,7 +42,6 @@
 				<msbuild project="${projectFile}" verbosity="normal" />
 			</do>
 		</foreach>
-		<!--<msbuild project="Adis.Log.sln" verbosity="minimal" />-->
 	</target>
 
 	<target name="performtests">
