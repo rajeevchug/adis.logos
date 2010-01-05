@@ -183,7 +183,7 @@ namespace Adis.Log.Server
 				}
 				else
 				{
-					whereFunc = le => le.Message.StartsWith(message);
+					whereFunc = le => le.Message.Contains(message);
 				}
 				logEvents = logEvents.Where(whereFunc);
 			}
