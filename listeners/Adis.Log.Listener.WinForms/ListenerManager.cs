@@ -80,7 +80,7 @@ namespace Adis.Log.Listener.WinForms
 		{
 			int skip = 0;
 			int take = 10;
-			List<LogTransportObject> logsReturned = null;
+			IEnumerable<LogTransportObject> logsReturned = null;
 			if (requestFilter.StartTime != null)
 			{
 				do
@@ -94,7 +94,7 @@ namespace Adis.Log.Listener.WinForms
 						MainForm.AddRange(logsReturned);
 					}
 
-				} while (logsReturned != null && logsReturned.Count == take);
+				} while (logsReturned != null && logsReturned.Count() == take);
 			}
 		}
 
