@@ -12,11 +12,17 @@ namespace Adis.Log.Contract
 	public interface IReporterContract
 	{
 		[OperationContract]
-		List<LogTransportObject> GetRecords(RequestFilter filter,  int skipFirst, int maxRecords);
+		IEnumerable<LogTransportObject> GetRecords(RequestFilter filter,  int skipFirst, int maxRecords);
 
     [OperationContract]
     int GetCount(RequestFilter filter);
 
+		[OperationContract]
+		IEnumerable<string> GetCategoryList();
+
+		[OperationContract]
+		Dictionary<string, IEnumerable<string>> GetApplicationList();
+		
   }
 
 }
