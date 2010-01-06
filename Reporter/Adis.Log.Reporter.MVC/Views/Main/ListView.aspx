@@ -3,7 +3,7 @@
 <%
 	var requestFilter = Model.RequestFilter;
 	var logList = Model.Logs;
-
+	
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -32,4 +32,12 @@
 	</div>
 	<%Html.RenderPartial("Pager", Model); %>
 </body>
+<script type="text/javascript">
+	var urls =  
+{
+	Applications: '<%=Url.Action("Applications", "Main", new { category = "__category__" }) %>',
+	Categories: '<%=Url.Action("Categories", "Main") %>',
+	Images: '<%= Url.Content("Images") %>'
+};
+</script>
 </html>
