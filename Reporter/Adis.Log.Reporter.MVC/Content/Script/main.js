@@ -28,10 +28,16 @@
 			this.Debug = true;
 		}
 
+		, FilterBarOnReady: function()
+		{
+			$('#category').change(function() { local.LoadApplicationFilterDropdown(); });
+			//get the category dropdown to update itself every 30 minutes
+			setInterval(function() { local.LoadCategoryFilterDropdown(); }, 20000);
+		}
 
 		, SetPageNumberAndSubmit: function(pageNumber)
 		{
-			document.forms[0].elements['pageNumber'].value = pageNumber;
+			$('#pageNumber').val(pageNumber);
 			document.forms[0].submit();
 		}
 
@@ -41,12 +47,69 @@
 			if ($extraInfo.css('display') == 'none')
 			{
 				$extraInfo.slideDown('slow');
-				$(button).text("Hide Extra Info");
 			} else
 			{
 				$extraInfo.slideUp('slow');
-				$(button).parents("table").find(".show_extra_info_button").text("Show Extra Info");
 			}
+		}
+
+		, LoadCategoryFilterDropdown: function()
+		{
+			var currentCategory = $('#category').val();
+
+			var $categoryDropdown = $("#category");
+			$categoryDropdown.unbind('change');
+			$categoryDropdown.html("<option value='-1'>Loading, please wait...</option>");
+
+			$.ajax({
+				url: urls.Categories,
+				type: "GET",
+				dataType: "json",
+				async: true,
+				success: function(jsonReply)
+				{
+
+					var options = "";
+					for (var i = 0; i < jsonReply.length; i++)
+					{
+						var application = jsonReply[i];
+						options += "<option value='" + application + "'>" + application + "</option>";
+					}
+					$categoryDropdown.html(options);
+					$categoryDropdown.val(currentCategory);
+				},
+				complete: function()
+				{
+					$categoryDropdown.change(function() { local.LoadApplicationFilterDropdown(); });
+				}
+			});
+		}
+
+		, LoadApplicationFilterDropdown: function()
+		{
+			var category = $("#category :selected").text();
+
+			var $applicationDropdown = $("#application");
+			$applicationDropdown.html("<option value='-1'>Loading, please wait...</option>");
+
+			$.ajax({
+				url: urls.Applications.replace("__category__", category),
+				type: "GET",
+				dataType: "json",
+				async: true,
+				success: function(jsonReply)
+				{
+
+					var options = "";
+					for (var i = 0; i < jsonReply.length; i++)
+					{
+						var application = jsonReply[i];
+						options += "<option value='" + application + "'>" + application + "</option>";
+					}
+					$applicationDropdown.html(options);
+				}
+			});
+
 		}
 
 	}
@@ -54,7 +117,6 @@
 	// set up global object instance
 	if (!window.logging) { window.logging = new function() { } }
 	window.logging.main = new Main();
-
 	var local = logging.main;
 
 
