@@ -8,6 +8,7 @@ using System.Web;
 using System.ServiceModel.Configuration;
 using System.Configuration;
 using System.Web.Configuration;
+using Adis.Log.Reporter.MVC.Providers;
 
 
 namespace Adis.Log.Reporter.MVC.Controllers
@@ -16,17 +17,18 @@ namespace Adis.Log.Reporter.MVC.Controllers
 	public class MainController : Controller
 	{
 		private IDictionary<string, string> _Addresses;
+		private static readonly string CACHE_CATEGORIES = "categories";
+    private ICacheProvider _cache;
 
 		public MainController()
 		{
+			_cache = new WebCacheProvider();
 			var client = (ClientSection)WebConfigurationManager.GetSection("system.serviceModel/client");
 			_Addresses = client.Endpoints.Cast<ChannelEndpointElement>().ToDictionary(c => c.Address.AbsoluteUri, c => c.Name);
 		}
 
 		public ActionResult Test()
 		{
-
-			Func<HttpCookie, bool> CheckCookieValue = c => c == null || string.IsNullOrEmpty(c.Value);
 
 			DateTime startTime = DateTime.MinValue;
 			DateTime.TryParse(Request.Cookies["startTime"] == null ? "" : Request.Cookies["startTime"].Value, out startTime);
@@ -39,16 +41,16 @@ namespace Adis.Log.Reporter.MVC.Controllers
 			bool machineExact = false;
 			if (Request.Cookies["machineExact"] != null) bool.TryParse(Request.Cookies["machineExact"].Value, out machineExact);
 			Severity severity = Severity.All;
-			if(!CheckCookieValue(Request.Cookies["severity"])) severity = (Severity)Enum.Parse(typeof(Severity), Request.Cookies["severity"].Value);
-			
+			if (!CookieIsBlank(Request.Cookies["severity"])) severity = (Severity)Enum.Parse(typeof(Severity), Request.Cookies["severity"].Value);
+
 
 			return ViewList(
-				CheckCookieValue(Request.Cookies["category"]) ? null : Request.Cookies["category"].Value,
-				CheckCookieValue(Request.Cookies["application"]) ? null : Request.Cookies["application"].Value,
-				CheckCookieValue(Request.Cookies["instance"]) ? null : Request.Cookies["instance"].Value,
-				CheckCookieValue(Request.Cookies["user"]) ? null : Request.Cookies["user"].Value,
-				CheckCookieValue(Request.Cookies["machine"]) ? null : Request.Cookies["machine"].Value,
-				CheckCookieValue(Request.Cookies["message"]) ? null : Request.Cookies["message"].Value,
+				CookieIsBlank(Request.Cookies["category"]) ? null : Request.Cookies["category"].Value,
+				CookieIsBlank(Request.Cookies["application"]) ? null : Request.Cookies["application"].Value,
+				CookieIsBlank(Request.Cookies["instance"]) ? null : Request.Cookies["instance"].Value,
+				CookieIsBlank(Request.Cookies["user"]) ? null : Request.Cookies["user"].Value,
+				CookieIsBlank(Request.Cookies["machine"]) ? null : Request.Cookies["machine"].Value,
+				CookieIsBlank(Request.Cookies["message"]) ? null : Request.Cookies["message"].Value,
 				severity,
 				startTime == DateTime.MinValue ? null : (DateTime?)startTime,
 				endTime == DateTime.MinValue ? null : (DateTime?)endTime,
@@ -56,7 +58,7 @@ namespace Adis.Log.Reporter.MVC.Controllers
 				userExact,
 				machineExact,
 				1,
-				CheckCookieValue(Request.Cookies["LogServer"]) ? null : Request.Cookies["LogServer"].Value
+				CookieIsBlank(Request.Cookies["LogServer"]) ? null : Request.Cookies["LogServer"].Value
 			 );
 
 		}
@@ -94,7 +96,7 @@ namespace Adis.Log.Reporter.MVC.Controllers
 				EndTime = endTime,
 				Message = message == "" ? null : message,
 				MessageExactMatch = false,
-				Severity = severity == Severity.All ? null : severity.ToString(),
+				Severity = severity == Severity.All ? Severity.Debug.ToString() : severity.ToString(),
 			};
 
 			ReporterContractClient reporterContractClient = null;
@@ -121,8 +123,8 @@ namespace Adis.Log.Reporter.MVC.Controllers
 			try
 			{
 				logsList = reporterContractClient == null ? new List<LogTransportObject>() : reporterContractClient.GetRecords(filter, recordsToSkip, recordsPerPage).Reverse();
-				categories=reporterContractClient == null ? new List<string>() : reporterContractClient.GetCategoryList();
-				applications = reporterContractClient == null ? new List<string>() : reporterContractClient.GetApplicationList();
+				categories = GetCategories(reporterContractClient);
+				applications = GetApplications(reporterContractClient, category);
 			}
 			catch (Exception e)
 			{
@@ -165,7 +167,73 @@ namespace Adis.Log.Reporter.MVC.Controllers
 			return View("ListView", viewdata);
 		}
 
+		public ActionResult Categories()
+		{
+			var logServer = CookieIsBlank(Request.Cookies["LogServer"]) ? null : Request.Cookies["LogServer"].Value;
+			ReporterContractClient reporterContractClient = null;
+			if (!string.IsNullOrEmpty(logServer))
+			{
+				reporterContractClient = new ReporterContractClient(_Addresses[logServer]);
+			}
+			return Json(GetCategories(reporterContractClient));
+		}
+
+		public ActionResult Applications(string category)
+		{
+			var logServer = CookieIsBlank(Request.Cookies["LogServer"]) ? null : Request.Cookies["LogServer"].Value;
+			ReporterContractClient reporterContractClient = null;
+			if (!string.IsNullOrEmpty(logServer))
+			{
+				reporterContractClient = new ReporterContractClient(_Addresses[logServer]);
+			}
+			return Json(GetApplications(reporterContractClient, category));
+		}
 
 
+		private IEnumerable<string> GetCategories(ReporterContractClient server)
+		{
+			if (server == null)
+			{
+				throw new InvalidOperationException("server is null");
+			}
+			if (_cache != null)
+			{
+				var list = _cache[CACHE_CATEGORIES] as Dictionary<string, IEnumerable<string>>;
+				if (list == null)
+				{
+					list = server.GetApplicationList();
+					_cache.Add(CACHE_CATEGORIES, list, TimeSpan.FromHours(1));
+				}
+
+				return list.Keys;
+			}
+			return server.GetApplicationList().Keys;
+
+		}
+
+		private IEnumerable<string> GetApplications(ReporterContractClient server, string category)
+		{
+			if (server == null)
+			{
+				throw new InvalidOperationException("server is null");
+			}
+			if (_cache != null)
+			{
+				var list = _cache[CACHE_CATEGORIES] as Dictionary<string, IEnumerable<string>>;
+				if (list == null)
+				{
+					list = server.GetApplicationList();
+					_cache.Add(CACHE_CATEGORIES, list, TimeSpan.FromHours(1));
+				}
+
+				return list[category];
+			}
+			return server.GetApplicationList()[category];
+		}
+
+		private static bool CookieIsBlank(HttpCookie c)
+		{
+			return c == null || string.IsNullOrEmpty(c.Value);
+		}
 	}
 }
