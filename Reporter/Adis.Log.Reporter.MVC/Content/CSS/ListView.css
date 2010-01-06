@@ -6,7 +6,15 @@
 
 .extra_info
 {
-	
+	color: Black;
+}
+
+.filter_section
+{
+	border: 1px solid #808080;
+	margin-top:5px;
+	margin-bottom:5px;
+	width:100%;
 }
 
 pre
@@ -25,10 +33,13 @@ pre
 	padding: 2px 4px 2px 4px;
 	margin: 0px 0px 5px 0px;
 	border:solid 1px black;
+	color:#808080;
 }
+
 .log_item .message
 {
  font-weight:bold;
+ color:Black;
 }
 
 .log_item>table
@@ -60,6 +71,14 @@ pre
 	background-color: #FFFFFF;
 }
 
+.swatch
+{
+	width:100px;
+	margin: 2px 5px 2px 5px;
+	padding-left:5px;
+	padding-right:5px;
+	border:solid 1px Black;
+}
 
 .pager
 {
@@ -77,4 +96,9 @@ pre
 .current_page
 {
 	font-weight:bold;
+}
+
+.show_extra_info_button
+{
+	border-bottom-width:0px;
 }
