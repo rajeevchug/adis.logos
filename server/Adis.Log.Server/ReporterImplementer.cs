@@ -82,7 +82,7 @@ namespace Adis.Log.Server
         .WithInstance(filter.Instance, filter.InstanceExactMatch)
         .WithMachine(filter.Machine, filter.MachineExactMatch)
         .WithUser(filter.User, filter.UserExactMatch)
-        .WithSeverity(filter.Severity)
+        .WithMaxSeverity(filter.Severity)
         .WithMessage(filter.Message, filter.MessageExactMatch)
         ;
 
