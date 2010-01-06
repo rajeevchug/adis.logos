@@ -30,5 +30,16 @@ namespace Adis.Log.Reporter.MVC.Providers
 				else Cache[name] = value;
 			}
 		}
+
+
+		object ICacheProvider.this[string name]
+		{
+			get { return Cache[name]; }
+			set
+			{
+				if (value == null) Cache.Remove(name);
+				else Cache[name] = value;
+			}
+		}
 	}
 }
