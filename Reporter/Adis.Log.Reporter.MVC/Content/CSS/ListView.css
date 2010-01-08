@@ -1,12 +1,33 @@
-﻿p
+﻿body
+{
+	font-family:Arial;
+	font-size:10pt;
+	overflow:hidden;
+}
+
+p
 {
 	margin:0 0 0 0;
 	padding:0 0 0 0;
 }
 
-.extra_info
+.top_section
 {
-	color: Black;
+	height:300px;
+	overflow:hidden;
+}
+
+.main_section
+{
+	position: absolute;
+	top:300px;
+	bottom:2px;
+	left:0px;
+	right:0px;
+	padding-left:5px;
+	padding-right:5px;
+	overflow-x:hidden;
+	overflow-y:scroll;
 }
 
 .filter_section
@@ -36,9 +57,18 @@ pre
 	color:#808080;
 }
 
+.has_extra_info
+{
+	cursor: hand;
+}
+
+.log_item .extra_info
+{
+	color: Black;
+}
+
 .log_item .message
 {
- font-weight:bold;
  color:Black;
 }
 
