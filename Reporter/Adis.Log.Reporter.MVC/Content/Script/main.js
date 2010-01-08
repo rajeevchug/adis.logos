@@ -31,8 +31,8 @@
 		, FilterBarOnReady: function()
 		{
 			$('#category').change(function() { local.LoadApplicationFilterDropdown(); });
-			//get the category dropdown to update itself every 30 minutes
-			setInterval(function() { local.LoadCategoryFilterDropdown(); }, 20000);
+			$('.log_item.has_extra_info').click(function() { logging.main.ToggleExtraInfo(this); });
+
 		}
 
 		, SetPageNumberAndSubmit: function(pageNumber)
@@ -41,9 +41,9 @@
 			document.forms[0].submit();
 		}
 
-		, ToggleExtraInfo: function(button)
+		, ToggleExtraInfo: function(logItem)
 		{
-			var $extraInfo = $(button).parents("table").find(".extra_info");
+			var $extraInfo = $(".extra_info", logItem);
 			if ($extraInfo.css('display') == 'none')
 			{
 				$extraInfo.slideDown('slow');
