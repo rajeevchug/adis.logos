@@ -14,6 +14,7 @@
 	<script src="<%=AppHelper.ScriptUrl("main.js") %>" type="text/javascript"></script>
 </head>
 <body>
+	<div class="top_section">
 	<%Html.RenderPartial("FilterBar", new FilterBarViewData() 
 	 { RequestFilter = requestFilter, 
 		 SelectedCategory = Model.SelectedCategory, 
@@ -24,13 +25,13 @@
 	 }); %>
 	 <div class="error_message"><%=Model.ErrorMessage %></div>
 	<%Html.RenderPartial("Pager"); %>
-	<div>
+	 </div>
+	<div class="main_section">
 		<%foreach (var log in logList)
 		{
 			Html.RenderPartial("LogView", log);
 		} %>
 	</div>
-	<%Html.RenderPartial("Pager", Model); %>
 </body>
 <script type="text/javascript">
 	var urls =  
