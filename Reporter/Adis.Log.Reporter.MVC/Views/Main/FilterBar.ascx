@@ -9,20 +9,9 @@
 		"Value", "Text"
 		);
 
-	Func<IEnumerable<string>, string, SelectList> PrefixEmptyEntry = (collection, currentFilter) =>
-		{
-			if (!collection.Contains(""))
-			{
-				var temp = collection.ToList();
-				temp.Insert(0, "");
-				collection = temp;
-			}
-			return new SelectList(collection, currentFilter);
-		};
-	
-	var categories = PrefixEmptyEntry(Model.Categories, requestFilter.Category);
-	var applications = PrefixEmptyEntry(Model.Applications, requestFilter.Application);
-	var logServers = PrefixEmptyEntry(Model.LogServers, Model.LogServer);	
+	var categories = new SelectList(Model.Categories, requestFilter.Category);
+	var applications = new SelectList(Model.Applications, requestFilter.Application);
+	var logServers = new SelectList(Model.LogServers, Model.LogServer);	
 	
 %>
 <div class="filter_bar">
@@ -109,7 +98,7 @@
 			</td>
 		</tr>
 	</table>
-	<input type="hidden" name="pageNumber" value="-1" />
+	<input type="hidden" id="pageNumber" name="pageNumber" value="-1" />
 	<%}
 		 %>
 	<div>
