@@ -123,8 +123,8 @@ namespace Adis.Log.Reporter.MVC.Controllers
 			try
 			{
 				logsList = reporterContractClient == null ? new List<LogTransportObject>() : reporterContractClient.GetRecords(filter, recordsToSkip, recordsPerPage).Reverse();
-				categories = GetCategories(reporterContractClient);
-				applications = GetApplications(reporterContractClient, category);
+				categories = GetCategories(_Addresses[logServer], reporterContractClient);
+				applications = GetApplications(_Addresses[logServer], reporterContractClient, category);
 			}
 			catch (Exception e)
 			{
@@ -167,42 +167,43 @@ namespace Adis.Log.Reporter.MVC.Controllers
 			return View("ListView", viewdata);
 		}
 
-		public ActionResult Categories()
+		public ActionResult Categories(string server)
 		{
-			var logServer = CookieIsBlank(Request.Cookies["LogServer"]) ? null : Request.Cookies["LogServer"].Value;
+			var logServer = server == null ? CookieIsBlank(Request.Cookies["LogServer"]) ? null : Request.Cookies["LogServer"].Value : server;
 			ReporterContractClient reporterContractClient = null;
 			if (!string.IsNullOrEmpty(logServer))
 			{
 				reporterContractClient = new ReporterContractClient(_Addresses[logServer]);
 			}
-			return Json(GetCategories(reporterContractClient));
+			return Json(GetCategories(logServer, reporterContractClient));
 		}
 
-		public ActionResult Applications(string category)
+		public ActionResult Applications(string server, string category)
 		{
-			var logServer = CookieIsBlank(Request.Cookies["LogServer"]) ? null : Request.Cookies["LogServer"].Value;
+			var logServer = server == null ? CookieIsBlank(Request.Cookies["LogServer"]) ? null : Request.Cookies["LogServer"].Value : server;
 			ReporterContractClient reporterContractClient = null;
 			if (!string.IsNullOrEmpty(logServer))
 			{
 				reporterContractClient = new ReporterContractClient(_Addresses[logServer]);
 			}
-			return Json(GetApplications(reporterContractClient, category));
+			return Json(GetApplications(logServer, reporterContractClient, category));
 		}
 
 
-		private IEnumerable<string> GetCategories(ReporterContractClient server)
+		private IEnumerable<string> GetCategories(string serverName, ReporterContractClient server)
 		{
+			var cacheName = CACHE_CATEGORIES+serverName;
 			if (server == null)
 			{
 				throw new InvalidOperationException("server is null");
 			}
 			if (_cache != null)
 			{
-				var list = _cache[CACHE_CATEGORIES] as Dictionary<string, IEnumerable<string>>;
+				var list = _cache[cacheName] as Dictionary<string, IEnumerable<string>>;
 				if (list == null)
 				{
 					list = server.GetApplicationList();
-					_cache.Add(CACHE_CATEGORIES, list, TimeSpan.FromHours(1));
+					_cache.Add(cacheName, list, TimeSpan.FromHours(1));
 				}
 
 				return list.Keys;
@@ -211,19 +212,20 @@ namespace Adis.Log.Reporter.MVC.Controllers
 
 		}
 
-		private IEnumerable<string> GetApplications(ReporterContractClient server, string category)
+		private IEnumerable<string> GetApplications(string serverName, ReporterContractClient server, string category)
 		{
+			var cacheName = CACHE_CATEGORIES + serverName;
 			if (server == null)
 			{
 				throw new InvalidOperationException("server is null");
 			}
 			if (_cache != null)
 			{
-				var list = _cache[CACHE_CATEGORIES] as Dictionary<string, IEnumerable<string>>;
+				var list = _cache[cacheName] as Dictionary<string, IEnumerable<string>>;
 				if (list == null)
 				{
 					list = server.GetApplicationList();
-					_cache.Add(CACHE_CATEGORIES, list, TimeSpan.FromHours(1));
+					_cache.Add(cacheName, list, TimeSpan.FromHours(1));
 				}
 
 				return list[category];
@@ -236,4 +238,5 @@ namespace Adis.Log.Reporter.MVC.Controllers
 			return c == null || string.IsNullOrEmpty(c.Value);
 		}
 	}
+
 }
