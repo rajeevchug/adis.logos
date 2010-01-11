@@ -36,8 +36,8 @@
 <script type="text/javascript">
 	var urls =  
 {
-	Applications: '<%=Url.Action("Applications", "Main", new { category = "__category__" }) %>',
-	Categories: '<%=Url.Action("Categories", "Main") %>',
+	Applications: '<%=Url.Action("Applications", "Main", new {  server = "__server__", category = "__category__" }) %>',
+	Categories: '<%=Url.Action("Categories", "Main", new { server = "__server__" }) %>',
 	Images: '<%= Url.Content("Images") %>'
 };
 </script>
