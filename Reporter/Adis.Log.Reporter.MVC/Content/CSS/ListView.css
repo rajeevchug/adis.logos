@@ -13,8 +13,15 @@ p
 
 .top_section
 {
+	position: absolute;
 	height:300px;
 	overflow:hidden;
+	top:0px;
+	left:0px;
+	right:0px;
+	padding-top:10px;
+	padding-left:5px;
+	padding-right:5px;
 }
 
 .main_section
@@ -131,4 +138,47 @@ pre
 .show_extra_info_button
 {
 	border-bottom-width:0px;
+}
+
+.filter_header
+{
+	cursor: hand;
+	font-weight:bold;
+	background-color:#EEEEFF;
+	padding:5px;
+}
+
+.filter_header .filter
+{
+	display: inline-block;
+	float:left;
+	padding:0px 5px 0px 0px;
+}
+
+.filter_header .filter_value
+{
+	color:Red;
+}
+
+.expander
+{
+	cursor: hand;
+	display: inline-block;
+	float: right;
+	text-align: right;
+	width:16px;
+	height:16px;
+	padding-right: 5px;
+	background: transparent url('../../Content/Images/expand.png') no-repeat left top;
+}
+
+
+.brclear
+{ 
+	display: block;
+	clear:both; 
+	height:0; 
+	margin:0;
+	font-size: 1px;
+	line-height: 0px;
 }
