@@ -30,15 +30,41 @@
 
 		, FilterBarOnReady: function()
 		{
+			local.DisplayError();
+			$('.filter_bar').keypress(function(eventObj) { if (eventObj.keyCode == 13) { local.SetPageNumberAndSubmit(1); } });
 			$('#category').change(function() { local.LoadApplicationFilterDropdown(); });
 			$('#logServer').change(function() { local.LoadCategoryFilterDropdown(); });
-			$('.log_item.has_extra_info').click(function() { logging.main.ToggleExtraInfo(this); });
-			//$('.filter_header').click(function() { logging.main.ToggleFilterSlide(); });
+			$('.log_item.has_extra_info').click(function() { local.ToggleExtraInfo(this); });
+			$('.log_item .extra_info').click(function(eventObj) { eventObj.stopPropagation(); });
+			$('#startTime').datepicker({ dateFormat: 'yy-mm-dd', buttonImageOnly: true, buttonImage: '../../Content/Images/calendar-icon.png', showOn: 'button' });
+			$('#otherFiltersOption').change(function() { local.ResetOtherOptionsTextbox(); });
+			$('#otherFiltersValue').blur(function() { local.UpdateOtherFiltersValue(); });
+			//do any client side setup for the initial page load (like attaching the datepicker)
+			local.ResetOtherOptionsTextbox(false);
+		}
+
+		, DisplayError: function()
+		{
+			if ($('.error_message').text() != "")
+			{
+				$('.error_message').dialog(
+					{
+						buttons: { "Ok": function() { $(this).dialog('close'); } },
+						modal: true,
+						title: "An Error Occured"
+					});
+			}
+		}
+
+		, ShowMoreFilters: function()
+		{
+			$('#filterDialog').dialog('open');
 		}
 
 		, SetPageNumberAndSubmit: function(pageNumber)
 		{
 			$('#pageNumber').val(pageNumber);
+			local.UpdateOtherFiltersValue();
 			document.forms[0].submit();
 		}
 
@@ -66,9 +92,9 @@
 		, LoadCategoryFilterDropdown: function()
 		{
 			var currentCategory = $('#category').val();
-			
+
 			var logServer = $('#logServer').val();
-			
+
 			var $categoryDropdown = $("#category");
 			$categoryDropdown.unbind('change');
 			$categoryDropdown.html("<option value='-1'>Loading, please wait...</option>");
@@ -92,7 +118,9 @@
 				},
 				complete: function()
 				{
+					local.LoadApplicationFilterDropdown();
 					$categoryDropdown.change(function() { local.LoadApplicationFilterDropdown(); });
+					
 				}
 			});
 		}
@@ -139,6 +167,56 @@
 
 		}
 
+		, ResetOtherOptionsTextbox: function(resetValuesTextbox)
+		{
+			var $valueTextbox = $('#otherFiltersValue');
+			if (resetValuesTextbox == undefined || resetValuesTextbox)
+			{
+				$valueTextbox.val('');
+			}
+			$('#instance').val('');
+			$('#instanceExact').val(false);
+			$('#machine').val('');
+			$('#machineExact').val(false);
+			$('#user').val('');
+			$('#userExact').val(false);
+			$('#endTime').val('');
+
+			if ($('#otherFiltersOption').val() == 'EndTime')
+			{
+				$valueTextbox.datepicker({ dateFormat: 'yy-mm-dd', buttonImageOnly: true, buttonImage: '../../Content/Images/calendar-icon.png', showOn: 'button' });
+
+			} else
+			{
+				$valueTextbox.datepicker('destroy');
+			}
+		}
+
+		, UpdateOtherFiltersValue: function()
+		{
+			var $valueTextbox = $('#otherFiltersValue');
+			var fieldToChange = "";
+			switch ($('#otherFiltersOption').val())
+			{
+				case 'Instance':
+					fieldToChange = 'instance';
+					break;
+				case 'Machine':
+					fieldToChange = 'machine';
+					break;
+				case 'User':
+					fieldToChange = 'user';
+					break;
+				case 'EndTime':
+					fieldToChange = 'endTime';
+					break;
+			}
+			if (fieldToChange != "")
+			{
+				$('#' + fieldToChange).val($valueTextbox.val());
+			}
+
+		}
 	}
 
 	function CreateCookie(name, value, days)
