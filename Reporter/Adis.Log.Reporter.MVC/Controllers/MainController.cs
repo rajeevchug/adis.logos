@@ -24,10 +24,10 @@ namespace Adis.Log.Reporter.MVC.Controllers
 		{
 			_cache = new WebCacheProvider();
 			var client = (ClientSection)WebConfigurationManager.GetSection("system.serviceModel/client");
-			_Addresses = client.Endpoints.Cast<ChannelEndpointElement>().ToDictionary(c => c.Address.AbsoluteUri, c => c.Name);
+			_Addresses = client.Endpoints.Cast<ChannelEndpointElement>().ToDictionary(c => c.Address.AbsoluteUri.Replace("http://", ""), c => c.Name);
 		}
 
-		public ActionResult Test()
+		public ActionResult Default()
 		{
 
 			DateTime startTime = DateTime.MinValue;
@@ -42,7 +42,6 @@ namespace Adis.Log.Reporter.MVC.Controllers
 			if (Request.Cookies["machineExact"] != null) bool.TryParse(Request.Cookies["machineExact"].Value, out machineExact);
 			Severity severity = Severity.All;
 			if (!CookieIsBlank(Request.Cookies["severity"])) severity = (Severity)Enum.Parse(typeof(Severity), Request.Cookies["severity"].Value);
-
 
 			return ViewList(
 				CookieIsBlank(Request.Cookies["category"]) ? null : Request.Cookies["category"].Value,
@@ -99,13 +98,26 @@ namespace Adis.Log.Reporter.MVC.Controllers
 				Severity = severity == Severity.All ? Severity.Debug.ToString() : severity.ToString(),
 			};
 
+			var error = "";
+
 			ReporterContractClient reporterContractClient = null;
-			if (!string.IsNullOrEmpty(logServer))
+
+			if (string.IsNullOrEmpty(logServer) || !_Addresses.Keys.Contains(logServer))
 			{
-				reporterContractClient = new ReporterContractClient(_Addresses[logServer]);
+				logServer=_Addresses.Keys.First();
 			}
 
-			var totalRecordCount = reporterContractClient == null ? 0 : reporterContractClient.GetCount(filter);
+			reporterContractClient = new ReporterContractClient(_Addresses[logServer]);
+
+			var totalRecordCount = 0;
+			try
+			{
+				totalRecordCount = reporterContractClient == null ? 0 : reporterContractClient.GetCount(filter);
+			}
+			catch (System.ServiceModel.EndpointNotFoundException)
+			{
+				error = string.Format("The log server {0} cannot be found. It may be down.", _Addresses[logServer]);
+			}
 			var recordsToSkip = totalRecordCount < recordsPerPage ? 0 : totalRecordCount - ((pageNumber + 1) * recordsPerPage);
 			var maxPage = totalRecordCount / recordsPerPage;
 
@@ -118,19 +130,20 @@ namespace Adis.Log.Reporter.MVC.Controllers
 			IEnumerable<LogTransportObject> logsList = new List<LogTransportObject>();
 			IEnumerable<string> categories = new List<string>();
 			IEnumerable<string> applications = new List<string>();
-			var error = "";
 
-			try
+			if (reporterContractClient.State == System.ServiceModel.CommunicationState.Opened)
 			{
-				logsList = reporterContractClient == null ? new List<LogTransportObject>() : reporterContractClient.GetRecords(filter, recordsToSkip, recordsPerPage).Reverse();
-				categories = GetCategories(_Addresses[logServer], reporterContractClient);
-				applications = GetApplications(_Addresses[logServer], reporterContractClient, category);
+				try
+				{
+					logsList = reporterContractClient == null ? new List<LogTransportObject>() : reporterContractClient.GetRecords(filter, recordsToSkip, recordsPerPage).Reverse();
+					categories = GetCategories(_Addresses[logServer], reporterContractClient);
+					applications = GetApplications(_Addresses[logServer], reporterContractClient, category);
+				}
+				catch (Exception e)
+				{
+					error = "An error occured while attempting to get the log information : " + e.Message;
+				}
 			}
-			catch (Exception e)
-			{
-				error = "An error occured while attempting to get the log information : " + e.Message;
-			}
-
 			var viewdata = new ListViewData()
 			{
 				Logs = logsList,
