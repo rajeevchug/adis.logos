@@ -3,16 +3,21 @@
 	var minPage = 1;
 	var maxPage = Model.MaxPage;
 
-	var minPageNumToDisplay = Model.Page - 5 < minPage ? minPage : Model.Page - 5;
-	var maxPageNumToDisplay = Model.Page + 5 > maxPage ? maxPage : Model.Page + 5;
+	var minPageNumToDisplay = Model.Page - 3 < minPage ? minPage : Model.Page - 3;
+	var maxPageNumToDisplay = minPageNumToDisplay + 6 > maxPage ? maxPage : minPageNumToDisplay + 6;
+	
 	 %>
 <div class="pager">
 <%if (Model.Page != minPage)
 	{ %>
 		 <a href="#" class='pager_item' onclick="logging.main.SetPageNumberAndSubmit(<%=minPage %>)">|&lt;&lt;</a>
 		 <a href="#" class='pager_item' onclick="logging.main.SetPageNumberAndSubmit(<%=Model.Page-1 %>)">&lt;</a>
+		 <%if (minPageNumToDisplay > minPage)
+		 { %>
+		 <a href="#" class='pager_item' onclick="logging.main.SetPageNumberAndSubmit(<%=minPage %>)"><%=minPage%></a>
 		 <span class='pager_item'>...</span>
-<%}
+		 <%} 
+	}
 	else
 	{ %>
 		 <span class='pager_item'>|&lt;&lt;</span>
@@ -31,8 +36,12 @@
 	}
 		 %>
 <%if (Model.Page != maxPage)
-	{ %>
+	{ 
+		 if (maxPageNumToDisplay < maxPage)
+		 { %>
 			<span class='pager_item'>...</span>
+		 <a href="#" class='pager_item' onclick="logging.main.SetPageNumberAndSubmit(<%=maxPage %>)"><%=maxPage%></a>
+		 <%} %>
 		 <a href="#" class='pager_item' onclick="logging.main.SetPageNumberAndSubmit(<%=Model.Page+1 %>)">&gt;</a>
 		 <a href="#" class='pager_item' onclick="logging.main.SetPageNumberAndSubmit(<%=maxPage %>)">&gt;&gt;|</a>
 <%}
