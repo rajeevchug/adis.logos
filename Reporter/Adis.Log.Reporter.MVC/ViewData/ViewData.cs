@@ -11,7 +11,7 @@ namespace Adis.Log.Reporter.MVC.ViewData
 		All = 0,
 		Debug,
 		Info,
-		Warning,
+		Warn,
 		Error,
 		Fatal
 	};
