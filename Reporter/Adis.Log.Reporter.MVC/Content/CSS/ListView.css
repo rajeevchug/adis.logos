@@ -3,6 +3,17 @@
 	font-family:Arial;
 	font-size:10pt;
 	overflow:hidden;
+	background-color:#EEEEFF;
+}
+
+form
+{
+	margin:0px;
+}
+
+select
+{
+	border:solid black 1px;
 }
 
 p
@@ -14,7 +25,7 @@ p
 .top_section
 {
 	position: absolute;
-	height:300px;
+	height:130px;
 	overflow:hidden;
 	top:0px;
 	left:0px;
@@ -27,11 +38,16 @@ p
 .main_section
 {
 	position: absolute;
-	top:300px;
+	border-top:solid 1px #AAAAAA;
+	border-left:solid 1px #999999;
+	top:130px;
 	bottom:2px;
 	left:0px;
 	right:0px;
-	padding-left:5px;
+	margin-left:25px;
+	margin-right:25px;
+	padding-top:2px;
+	padding-left:3px;
 	padding-right:5px;
 	overflow-x:hidden;
 	overflow-y:scroll;
@@ -42,7 +58,21 @@ p
 	border: 1px solid #808080;
 	margin-top:5px;
 	margin-bottom:5px;
-	width:100%;
+	padding:5px;
+	
+}
+
+#filterForm .filter_line>div
+{
+	border: 0px;
+	float:left;
+	margin-left:5px;
+}
+#filterForm .filter_line>div label
+{
+	display:block;
+	margin-bottom:2px;
+	font-weight:bolder;
 }
 
 pre
@@ -72,6 +102,7 @@ pre
 .log_item .extra_info
 {
 	color: Black;
+	cursor:default;
 }
 
 .log_item .message
@@ -105,22 +136,19 @@ pre
 
 .severity_DEBUG
 {
-	background-color: #FFFFFF;
+	background-color: #FFFFDD;
 }
 
 .swatch
 {
 	width:100px;
 	margin: 2px 5px 2px 5px;
-	padding-left:5px;
-	padding-right:5px;
+	padding:2px 5px 2px 5px;
 	border:solid 1px Black;
 }
 
 .pager
 {
-	text-align: center;
-	margin: 5px 0px 5px 0px;
 	font-size: x-large;
 }
 
@@ -182,3 +210,21 @@ pre
 	font-size: 1px;
 	line-height: 0px;
 }
+
+.calendar_icon
+{
+	cursor:hand;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
