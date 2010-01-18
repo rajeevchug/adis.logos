@@ -3,7 +3,7 @@
 	font-family:Arial;
 	font-size:10pt;
 	overflow:hidden;
-	background-color:#EEEEFF;
+	background-color:#FFFFFF;
 }
 
 form
@@ -22,10 +22,43 @@ p
 	padding:0 0 0 0;
 }
 
+.wrapper
+{
+	background: url('../images/blue_gradient.png') repeat-x top left;
+	top:0px;
+	bottom:0px;
+	left:0px;
+	right:0px;
+	position:absolute;
+}
+
+#loadingImage
+{
+	background:white;
+	position:absolute;
+	width:100px;
+	height:100px;
+	visibility:hidden;
+	z-index:1000;
+}
+
+.page_header
+{
+	background: url('../images/black_banner.png') repeat-x top left;
+	color:White;
+	vertical-align:middle;
+	height:30px;
+	text-align:center;
+	font-weight:bolder;
+	font-size:x-large;
+	padding:0px 5px 5px 5px;
+	margin:-10px -5px 5px -5px;
+}
+
 .top_section
 {
 	position: absolute;
-	height:130px;
+	height:140px;
 	overflow:hidden;
 	top:0px;
 	left:0px;
@@ -40,7 +73,7 @@ p
 	position: absolute;
 	border-top:solid 1px #AAAAAA;
 	border-left:solid 1px #999999;
-	top:130px;
+	top:140px;
 	bottom:2px;
 	left:0px;
 	right:0px;
@@ -94,6 +127,17 @@ pre
 	color:#808080;
 }
 
+.log_item>.log_wrapper
+{
+	/*background:url('../Images/transparent_gradient.png') repeat-x top left;*/
+	margin:-2px -4px -2px -4px;
+}
+
+.log_item .secondary_info
+{
+	font-size:smaller;
+}
+
 .has_extra_info
 {
 	cursor: hand;
@@ -116,7 +160,7 @@ pre
 }
 .severity_FATAL
 {
-	background-color: #BBBBBB;
+	background-color: #C9FBFF;
 }
 
 .severity_ERROR
@@ -126,7 +170,7 @@ pre
 
 .severity_WARN
 {
-	background-color: #CCCCFF;
+	background-color: #FFDDC6;
 }
 
 .severity_INFO
