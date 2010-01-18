@@ -1,7 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="System.Web.Mvc.ViewUserControl<FilterBarViewData>" %>
 <%
 	var requestFilter = Model.RequestFilter;
-	var minPage = 1;
 
 	var severityOptions = new SelectList(
 		Enum.GetValues(typeof(Severity)).Cast<int>()
@@ -34,7 +33,7 @@
 	var categories = new SelectList(Model.Categories, requestFilter.Category);
 	var applications = new SelectList(Model.Applications, requestFilter.Application);
 	var logServers = new SelectList(Model.LogServers, Model.LogServer);
-	var otherFilters = new SelectList(new List<string>() { "", "Machine", "Instance", "User", "EndTime" }, currentOtherFilter);
+	var otherFilters = new SelectList(new List<string>() { "", "Machine", "Instance", "User", "EndDate" }, currentOtherFilter);
 	
 	//var ShowFilterHeader = new Func<string, string, string>((label, value) =>
 	//  {
@@ -81,7 +80,7 @@
 				<%=Html.DropDownList("severity", severityOptions)%>
 			</div>
 			<div>
-				<label>Start time</label>
+				<label>Start Date</label>
 				<%=Html.TextBox("startTime", requestFilter.StartTime, new { style = "width:80px;" })%>
 				
 			</div>
@@ -98,10 +97,6 @@
 			</div>
 		</div>
 		<br class="brclear" />
-		<div>
-				<a href="#" onclick="logging.main.SetPageNumberAndSubmit(<%=minPage %>)">Apply Filter</a>
-				<!--<a href="#" onclick="logging.main.ResetFilterCookies()">Reset Filters</a>-->
-		</div>
 	<input type="hidden" id="pageNumber" name="pageNumber" value="-1" />
 	<input type="hidden" id="instance" name="instance" value="" />
 	<input type="hidden" id="instanceExact" name="instanceExact" value="false" />
