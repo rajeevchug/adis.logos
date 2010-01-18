@@ -24,7 +24,7 @@ namespace Adis.Log.Reporter.MVC.Controllers
 		{
 			_cache = new WebCacheProvider();
 			var client = (ClientSection)WebConfigurationManager.GetSection("system.serviceModel/client");
-			_Addresses = client.Endpoints.Cast<ChannelEndpointElement>().ToDictionary(c => c.Address.AbsoluteUri.Replace("http://", ""), c => c.Name);
+			_Addresses = client.Endpoints.Cast<ChannelEndpointElement>().ToDictionary(c => c.Name, c => c.Name);
 		}
 
 		public ActionResult Default()
@@ -81,6 +81,13 @@ namespace Adis.Log.Reporter.MVC.Controllers
 		{
 			pageNumber--; //0 base page
 			var recordsPerPage = 25;
+
+			if (endTime != null)
+			{
+				endTime = endTime.Value.Add(new TimeSpan(0,
+					23 - endTime.Value.Hour, 59 - endTime.Value.Minute, 59 - endTime.Value.Second, 999 - endTime.Value.Millisecond)); 
+			}
+
 			var filter = new RequestFilter()
 			{
 				Category = category == "" ? null : category,
