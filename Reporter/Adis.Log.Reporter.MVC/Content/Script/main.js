@@ -40,8 +40,6 @@
 			$('.log_item .extra_info').click(function(eventObj) { eventObj.stopPropagation(); });
 			$('#otherFiltersOption').change(function() { local.ResetOtherOptionsTextbox(); });
 			$('#otherFiltersValue').blur(function() { local.UpdateOtherFiltersValue(); });
-			//do any client side setup for the initial page load (like attaching the datepicker)
-			local.ResetOtherOptionsTextbox(false);
 
 			var left = ($('.main_section')[0].offsetLeft + $('.main_section')[0].clientWidth - 100) / 2;
 			var top = ($('.main_section')[0].clientHeight + $('.main_section')[0].offsetTop - 100) / 2;
@@ -49,9 +47,12 @@
 
 			//$('#startTime').datepicker({ dateFormat: 'yy-mm-dd', buttonImageOnly: true, buttonImage: '../../Content/Images/calendar-icon.png', showOn: 'button' });
 			Date.format = 'dd/mm/yyyy';
-			$('#startTime').datePicker({ startDate: '01/01/1996', verticalPosition:  $.dpConst.POS_BOTTOM, horizontalPosition: $.dpConst.POS_LEFT });
-			$('#otherFiltersValue').datePicker({ startDate: '01/01/1996', horizontalPosition: $.dpConst.POS_LEFT });
-			$('#otherFiltersValue').blur();
+			$('#startTime').datePicker({ startDate: '01/01/1996', horizontalPosition: $.dpConst.POS_RIGHT, verticalOffset: $('#startTime').height() });
+			$('#otherFiltersValue').datePicker({ startDate: '01/01/1996', horizontalPosition: $.dpConst.POS_RIGHT, verticalOffset: $('#otherFiltersValue').height() });
+
+			//do any client side setup for the initial page load (like attaching the datepicker)
+			local.ResetOtherOptionsTextbox(false);
+
 		}
 
 		, DisplayError: function()
@@ -204,10 +205,16 @@
 			{
 				$valueTextbox.next('a.dp-choose-date').css('visibility', 'hidden');
 			}
+
 		}
 
 		, UpdateOtherFiltersValue: function()
 		{
+			$('#Instance').val("");
+			$('#Machine').val("");
+			$('#User').val("");
+			$('#EndDate').val("");
+
 			var $valueTextbox = $('#otherFiltersValue');
 			var fieldToChange = "";
 			switch ($('#otherFiltersOption').val())
