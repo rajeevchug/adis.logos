@@ -11,7 +11,7 @@
 	<title>Logging Reporter</title>
 	<link href="<%=AppHelper.CssUrl("ListView.css") %>" rel="stylesheet" type="text/css" />
 <%--	<link href="<%=AppHelper.CssUrl("jquery-ui-1.7.2.custom.css") %>" rel="stylesheet" type="text/css" />--%>
-	<link href="<%=AppHelper.ScriptUrl("datepicker.css")%>" rel="stylesheet" type="text/css"  />
+	<link href="<%=AppHelper.CssUrl("datepicker.css")%>" rel="stylesheet" type="text/css"  />
 	<script src="<%=AppHelper.ScriptUrl("jquery-1.3.2.min.js") %>" type="text/javascript"></script>
 	<script src="<%=AppHelper.ScriptUrl("main.js") %>" type="text/javascript"></script>
 <%--	<script src="<%=AppHelper.ScriptUrl("jquery-ui-1.7.2.custom.min.js") %>" type="text/javascript"></script>--%>
@@ -35,14 +35,14 @@
 		 LogServer = Model.LogServer
 	 }); %>
 		<div>
-			<div style="float: left; padding:3px;">
+			<div id="submitButton">
 					<a href="#" onclick="logging.main.SetPageNumberAndSubmit(1)">Apply Filter</a>
-					<!--<a href="#" onclick="logging.main.ResetFilterCookies()">Reset Filters</a>-->
+					<a href="#" onclick="logging.main.ResetFilterCookies()">Reset Filters</a>
 			</div>
-			<div style="float: right;">
+			<div id="pager">
 				<%Html.RenderPartial("Pager"); %>
 			</div>
-			<div style="float: right; padding:3px;">
+			<div id="severityLegend">
 				<span class="swatch severity_DEBUG">Debug</span>
 				<span class="swatch severity_INFO">Info</span> 
 				<span class="swatch severity_WARN">Warning</span> 
@@ -53,10 +53,21 @@
 		</div>
 	</div>
 	<div class="main_section">
-		<%foreach (var log in logList)
-		{
-			Html.RenderPartial("LogView", log);
-		} %>
+		<%
+			if (logList.Count() > 0)
+			{
+				foreach (var log in logList)
+				{
+					Html.RenderPartial("LogView", log);
+				}
+			}
+			else
+			{
+				%>
+				<h3>No Results Found</h3>
+				<%
+			}
+			%>
 	</div>
 	</div>
 </body>
