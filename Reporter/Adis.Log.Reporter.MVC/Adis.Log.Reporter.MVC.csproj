@@ -108,6 +108,7 @@
     <Content Include="Content\CSS\ListView.css" />
     <Content Include="Content\Images\add.png" />
     <Content Include="Content\Images\black_banner.png" />
+    <Content Include="Content\Images\blue_gradient.png" />
     <Content Include="Content\Images\Calendar-icon.png" />
     <Content Include="Content\Images\jquery-ui\ui-bg_flat_45_0078ae_40x100.png" />
     <Content Include="Content\Images\jquery-ui\ui-bg_flat_50_6eac2c_40x100.png" />
