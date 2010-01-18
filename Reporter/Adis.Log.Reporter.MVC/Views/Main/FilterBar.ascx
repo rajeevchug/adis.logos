@@ -26,8 +26,8 @@
 	}
 	else if (requestFilter.EndTime != null)
 	{
-		currentOtherFilter = "EndTime";
-		currentOtherFilterValue = requestFilter.EndTime.Value.ToString("yyyy-M-dd");
+		currentOtherFilter = "EndDate";
+		currentOtherFilterValue = requestFilter.EndTime.Value.ToString("dd/MM/yyyy");
 	} 
 	
 	var categories = new SelectList(Model.Categories, requestFilter.Category);
