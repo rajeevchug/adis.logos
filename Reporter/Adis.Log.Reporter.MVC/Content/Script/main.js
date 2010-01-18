@@ -1,4 +1,6 @@
 ﻿/// <reference path="jquery-1.3.2.js" />
+/// <reference path="jquery.datepicker.js" />
+/// <reference path="date.js" />
 
 (function()
 {
@@ -36,23 +38,33 @@
 			$('#logServer').change(function() { local.LoadCategoryFilterDropdown(); });
 			$('.log_item.has_extra_info').click(function() { local.ToggleExtraInfo(this); });
 			$('.log_item .extra_info').click(function(eventObj) { eventObj.stopPropagation(); });
-			$('#startTime').datepicker({ dateFormat: 'yy-mm-dd', buttonImageOnly: true, buttonImage: '../../Content/Images/calendar-icon.png', showOn: 'button' });
 			$('#otherFiltersOption').change(function() { local.ResetOtherOptionsTextbox(); });
 			$('#otherFiltersValue').blur(function() { local.UpdateOtherFiltersValue(); });
 			//do any client side setup for the initial page load (like attaching the datepicker)
 			local.ResetOtherOptionsTextbox(false);
+
+			var left = ($('.main_section')[0].offsetLeft + $('.main_section')[0].clientWidth - 100) / 2;
+			var top = ($('.main_section')[0].clientHeight + $('.main_section')[0].offsetTop - 100) / 2;
+			$('#loadingImage').css('left', left).css('top', top);
+
+			//$('#startTime').datepicker({ dateFormat: 'yy-mm-dd', buttonImageOnly: true, buttonImage: '../../Content/Images/calendar-icon.png', showOn: 'button' });
+			Date.format = 'dd/mm/yyyy';
+			$('#startTime').datePicker({ startDate: '01/01/1996', verticalPosition:  $.dpConst.POS_BOTTOM, horizontalPosition: $.dpConst.POS_LEFT });
+			$('#otherFiltersValue').datePicker({ startDate: '01/01/1996', horizontalPosition: $.dpConst.POS_LEFT });
+			$('#otherFiltersValue').blur();
 		}
 
 		, DisplayError: function()
 		{
 			if ($('.error_message').text() != "")
 			{
-				$('.error_message').dialog(
-					{
-						buttons: { "Ok": function() { $(this).dialog('close'); } },
-						modal: true,
-						title: "An Error Occured"
-					});
+				alert($('.error_message').text());
+				//				$('.error_message').dialog(
+				//					{
+				//						buttons: { "Ok": function() { $(this).dialog('close'); } },
+				//						modal: true,
+				//						title: "An Error Occured"
+				//					});
 			}
 		}
 
@@ -64,6 +76,8 @@
 		, SetPageNumberAndSubmit: function(pageNumber)
 		{
 			$('#pageNumber').val(pageNumber);
+			$('#loadingImage').css('visibility', 'visible');
+
 			local.UpdateOtherFiltersValue();
 			document.forms[0].submit();
 		}
@@ -120,7 +134,7 @@
 				{
 					local.LoadApplicationFilterDropdown();
 					$categoryDropdown.change(function() { local.LoadApplicationFilterDropdown(); });
-					
+
 				}
 			});
 		}
@@ -182,13 +196,13 @@
 			$('#userExact').val(false);
 			$('#endTime').val('');
 
-			if ($('#otherFiltersOption').val() == 'EndTime')
+			if ($('#otherFiltersOption').val() == 'EndDate')
 			{
-				$valueTextbox.datepicker({ dateFormat: 'yy-mm-dd', buttonImageOnly: true, buttonImage: '../../Content/Images/calendar-icon.png', showOn: 'button' });
+				$valueTextbox.next('a.dp-choose-date').css('visibility', 'visible');
 
 			} else
 			{
-				$valueTextbox.datepicker('destroy');
+				$valueTextbox.next('a.dp-choose-date').css('visibility', 'hidden');
 			}
 		}
 
@@ -207,7 +221,7 @@
 				case 'User':
 					fieldToChange = 'user';
 					break;
-				case 'EndTime':
+				case 'EndDate':
 					fieldToChange = 'endTime';
 					break;
 			}
