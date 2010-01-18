@@ -103,9 +103,11 @@
     <Content Include="Content\Script\main.js" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\CSS\datePicker.css" />
     <Content Include="Content\CSS\jquery-ui-1.7.2.custom.css" />
     <Content Include="Content\CSS\ListView.css" />
     <Content Include="Content\Images\add.png" />
+    <Content Include="Content\Images\black_banner.png" />
     <Content Include="Content\Images\Calendar-icon.png" />
     <Content Include="Content\Images\jquery-ui\ui-bg_flat_45_0078ae_40x100.png" />
     <Content Include="Content\Images\jquery-ui\ui-bg_flat_50_6eac2c_40x100.png" />
@@ -123,8 +125,13 @@
     <Content Include="Content\Images\jquery-ui\ui-icons_f5e175_256x240.png" />
     <Content Include="Content\Images\jquery-ui\ui-icons_f7a50d_256x240.png" />
     <Content Include="Content\Images\jquery-ui\ui-icons_fcd113_256x240.png" />
+    <Content Include="Content\Images\loading.large.gif" />
+    <Content Include="Content\Images\transparent_gradient.png" />
+    <Content Include="Content\Script\date.js" />
     <Content Include="Content\Script\jquery-1.3.2.min.js" />
     <Content Include="Content\Script\jquery-ui-1.7.2.custom.min.js" />
+    <Content Include="Content\Script\jquery.bgiframe.js" />
+    <Content Include="Content\Script\jquery.datePicker.js" />
     <Content Include="Views\Main\FilterBar.ascx" />
     <Content Include="Views\Main\Pager.ascx" />
     <Content Include="Views\Main\LogView.ascx" />
