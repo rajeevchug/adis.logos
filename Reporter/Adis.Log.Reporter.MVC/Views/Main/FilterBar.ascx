@@ -32,32 +32,13 @@
 	
 	var categories = new SelectList(Model.Categories, requestFilter.Category);
 	var applications = new SelectList(Model.Applications, requestFilter.Application);
-	var logServers = new SelectList(Model.LogServers, Model.LogServer);
-	var otherFilters = new SelectList(new List<string>() { "", "Machine", "Instance", "User", "EndDate" }, currentOtherFilter);
+	var logServers = new SelectList((new string[] { "" }).Concat(Model.LogServers), Model.LogServer);
+	var otherFilters = new SelectList(
+		new Dictionary<string, string>() { { "", ""}, {"Machine","Machine"}, {"Instance","Instance"}, {"User","User"}, {"EndDate" ,"EndDate" }}, 
+		"Key", "Value", currentOtherFilter);
 	
-	//var ShowFilterHeader = new Func<string, string, string>((label, value) =>
-	//  {
-	//    if (string.IsNullOrEmpty(value))
-	//    {
-	//      return string.Empty;
-	//    }
-	//    return string.Format("<span class=\"filter\">{0}: <span class=\"filter_value\">{1}</span></span>", label, value);
-	//  });
 %>
 <div class="filter_bar" >
-	<%--<div class="filter_header">
-		<%=ShowFilterHeader("Server", currentFilter.LogServer) %>
-		<%=ShowFilterHeader("Category", currentFilter.Category)%>
-		<%=ShowFilterHeader("Application", currentFilter.Application)%>
-		<%=ShowFilterHeader("Severity", currentFilter.Severity)%>
-		<%=ShowFilterHeader("Machine", currentFilter.Machine)%>
-		<%=ShowFilterHeader("Instance", currentFilter.Instance)%>
-		<%=ShowFilterHeader("User", currentFilter.User)%>
-		<%=ShowFilterHeader("StartTime", currentFilter.StartTime)%>
-		<%=ShowFilterHeader("EndTime", currentFilter.EndTime)%>
-		<%--<div class="expander"  title="Expand / Collapse"></div>
-		<div class="brclear"></div>
-	</div>--%>
 	<div id="filterForm" class="filter_section">
 	<% 
 		using (var form = Html.BeginForm("ViewList", "Main"))
