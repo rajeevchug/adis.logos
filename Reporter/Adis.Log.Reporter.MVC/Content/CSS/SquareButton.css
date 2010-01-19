@@ -30,6 +30,12 @@ a.squarebutton span, a.squarebutton[class~="squarebutton_Disabled"]:hover span
 	background-repeat: no-repeat;
 	color: #494949;
 }
+
+a.squarebutton.squarebutton_Disabled:hover span
+{
+cursor:default;
+}
+
 a.squarebutton:hover
 { 
 	background-position: bottom left;
@@ -74,6 +80,7 @@ a.squarebutton_Highlight span
 a.squarebutton_Disabled
 {
 	background-image: url('../images/square-gray-left.gif');
+	cursor:default;
 }
 a.squarebutton_Disabled span
 {
@@ -82,7 +89,7 @@ a.squarebutton_Disabled span
 }
 a.squarebutton[class~="squarebutton_None"]:hover, a.squarebutton[class~="squarebutton_None"]:hover span  /* These buttons should not be clickable. */
 {
-	cursor: progress;
+	cursor: default;
 }
 .buttonwrapper
 { 
