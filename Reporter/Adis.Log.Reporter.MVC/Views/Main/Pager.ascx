@@ -10,28 +10,28 @@
 <div class="pager">
 <%if (Model.Page != minPage)
 	{ %>
-		 <a href="#" class='pager_item' onclick="logging.main.SetPageNumberAndSubmit(<%=minPage %>)">|&lt;&lt;</a>
-		 <a href="#" class='pager_item' onclick="logging.main.SetPageNumberAndSubmit(<%=Model.Page-1 %>)">&lt;</a>
+		 <%=Html.ActionButton("logging.main.SetPageNumberAndSubmit("+minPage+")", "|&lt;&lt;", ButtonCategories.Normal)%>
+		 <%=Html.ActionButton("logging.main.SetPageNumberAndSubmit("+(Model.Page-1)+")", "&lt;", ButtonCategories.Normal)%>
 		 <%if (minPageNumToDisplay > minPage)
 		 { %>
-		 <a href="#" class='pager_item' onclick="logging.main.SetPageNumberAndSubmit(<%=minPage %>)"><%=minPage%></a>
-		 <span class='pager_item'>...</span>
+		 <%=Html.ActionButton("logging.main.SetPageNumberAndSubmit("+minPage+")", minPage.ToString(), ButtonCategories.Normal)%>
+		 <%=Html.ActionButton("", "...", ButtonCategories.None)%>
 		 <%} 
 	}
 	else
 	{ %>
-		 <span class='pager_item'>|&lt;&lt;</span>
-		 <span class='pager_item'>&lt;</span>
+		 <%=Html.ActionButton("", "|&lt;&lt;", ButtonCategories.Disabled)%>
+		 <%=Html.ActionButton("", "&lt;", ButtonCategories.Disabled)%>
 <%} %>
 <%for (int i = minPageNumToDisplay; i <= maxPageNumToDisplay; i++)
 	{
 		if (i == Model.Page)
 		{
-			Response.Write("<span class='current_page'>" + i + "</span>");
+			Response.Write(Html.ActionButton("", i.ToString(), ButtonCategories.None));
 		}
 		else
 		{
-			Response.Write("<a href='#' class='pager_item'  onclick=\"logging.main.SetPageNumberAndSubmit(" + i + ")\">" + i + "</a>");
+			Response.Write(Html.ActionButton("logging.main.SetPageNumberAndSubmit(" + i + ")", i.ToString(), ButtonCategories.Normal));
 		}
 	}
 		 %>
@@ -39,15 +39,15 @@
 	{ 
 		 if (maxPageNumToDisplay < maxPage)
 		 { %>
-			<span class='pager_item'>...</span>
-		 <a href="#" class='pager_item' onclick="logging.main.SetPageNumberAndSubmit(<%=maxPage %>)"><%=maxPage%></a>
+		 <%=Html.ActionButton("", "...", ButtonCategories.None)%>
+			<%=Html.ActionButton("logging.main.SetPageNumberAndSubmit(" + maxPage + ")", maxPage.ToString(), ButtonCategories.Normal) %>
 		 <%} %>
-		 <a href="#" class='pager_item' onclick="logging.main.SetPageNumberAndSubmit(<%=Model.Page+1 %>)">&gt;</a>
-		 <a href="#" class='pager_item' onclick="logging.main.SetPageNumberAndSubmit(<%=maxPage %>)">&gt;&gt;|</a>
+			<%=Html.ActionButton("logging.main.SetPageNumberAndSubmit(" + Model.Page + 1 + ")", "&gt;", ButtonCategories.Normal)%>
+			<%=Html.ActionButton("logging.main.SetPageNumberAndSubmit(" + maxPage + ")", "&gt;&gt;|", ButtonCategories.Normal) %>
 <%}
 	else
 	{ %>
-		 <span class='pager_item'>&gt;</span>
-		 <span class='pager_item'>&gt;&gt;|</span>
+		 <span class='pager_item disabled'>&gt;</span>
+		 <span class='pager_item disabled'>&gt;&gt;|</span>
 <%} %>
 </div>
