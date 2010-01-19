@@ -35,7 +35,7 @@
 		}
 	}
 		 %>
-<%if (Model.Page != maxPage)
+<%if (Model.Page < maxPage)
 	{ 
 		 if (maxPageNumToDisplay < maxPage)
 		 { %>
@@ -47,7 +47,7 @@
 <%}
 	else
 	{ %>
-		 <%=Html.ActionButton("", "&gt;&gt;|", ButtonCategories.Disabled)%>
 		 <%=Html.ActionButton("", "&gt;", ButtonCategories.Disabled)%>
+		 <%=Html.ActionButton("", "&gt;&gt;|", ButtonCategories.Disabled)%>
 <%} %>
 </div>
