@@ -45,7 +45,6 @@
 			var top = ($('.main_section')[0].clientHeight + $('.main_section')[0].offsetTop - 100) / 2;
 			$('#loadingImage').css('left', left).css('top', top);
 
-			//$('#startTime').datepicker({ dateFormat: 'yy-mm-dd', buttonImageOnly: true, buttonImage: '../../Content/Images/calendar-icon.png', showOn: 'button' });
 			Date.format = 'dd/mm/yyyy';
 			$('#startTime').datePicker({ startDate: '01/01/1996', horizontalPosition: $.dpConst.POS_RIGHT, verticalOffset: $('#startTime').height() });
 			$('#otherFiltersValue').datePicker({ startDate: '01/01/1996', horizontalPosition: $.dpConst.POS_RIGHT, verticalOffset: $('#otherFiltersValue').height() });
@@ -60,12 +59,6 @@
 			if ($('.error_message').text() != "")
 			{
 				alert($('.error_message').text());
-				//				$('.error_message').dialog(
-				//					{
-				//						buttons: { "Ok": function() { $(this).dialog('close'); } },
-				//						modal: true,
-				//						title: "An Error Occured"
-				//					});
 			}
 		}
 
@@ -109,10 +102,17 @@
 			var currentCategory = $('#category').val();
 
 			var logServer = $('#logServer').val();
-
 			var $categoryDropdown = $("#category");
+
+			if ('' == logServer)
+			{
+				$categoryDropdown.children().remove();
+				return;
+			}
+
 			$categoryDropdown.unbind('change');
 			$categoryDropdown.html("<option value='-1'>Loading, please wait...</option>");
+			$categoryDropdown.css('width', '150px');
 
 			$.ajax({
 				url: urls.Categories.replace('__server__', logServer),
@@ -121,15 +121,14 @@
 				async: true,
 				success: function(jsonReply)
 				{
-
-					var options = "";
+					$categoryDropdown.html('');
 					for (var i = 0; i < jsonReply.length; i++)
 					{
 						var application = jsonReply[i];
-						options += "<option value='" + application + "'>" + application + "</option>";
+						$categoryDropdown.append("<option value='" + application + "'>" + application + "</option>");
 					}
-					$categoryDropdown.html(options);
 					$categoryDropdown.val(currentCategory);
+					$categoryDropdown.css('width', 'auto');
 				},
 				complete: function()
 				{
@@ -144,9 +143,16 @@
 		{
 			var category = $("#category :selected").text();
 			var logServer = $('#logServer').val();
-
 			var $applicationDropdown = $("#application");
+
+			if ('' == logServer)
+			{
+				$applicationDropdown.children().remove();
+				return;
+			}
+
 			$applicationDropdown.html("<option value='-1'>Loading, please wait...</option>");
+			$applicationDropdown.css('width', '150px');
 
 			$.ajax({
 				url: urls.Applications.replace("__server__", logServer).replace("__category__", category),
@@ -163,13 +169,18 @@
 						options += "<option value='" + application + "'>" + application + "</option>";
 					}
 					$applicationDropdown.html(options);
+					$applicationDropdown.css('width', 'auto');
 				}
 			});
 
 		}
 
-		, ResetFilterCookies: function()
+		, ResetFilters: function()
 		{
+			$('#severity').val($('#severity option:first').val());
+			$('#startTime,#message,#otherFiltersValue').val('');
+			$('#otherFiltersOption').val($('#otherFiltersOption option:first').val());
+			
 			EraseCookie("LogServer");
 			EraseCookie("Category");
 			EraseCookie("Application");
