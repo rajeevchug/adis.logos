@@ -85,7 +85,7 @@ namespace Adis.Log.Server
 				}
 				else
 				{
-					whereFunc = le => le.Application.StartsWith(application);
+					whereFunc = le => le.Application.Contains(application);
 				}
 
 				logEvents = logEvents.Where(whereFunc);
@@ -106,7 +106,7 @@ namespace Adis.Log.Server
 				}
 				else
 				{
-					whereFunc = le => le.Category.StartsWith(category);
+					whereFunc = le => le.Category.Contains(category);
 				}
 				logEvents = logEvents.Where(whereFunc);
 
@@ -126,7 +126,7 @@ namespace Adis.Log.Server
 				}
 				else
 				{
-					whereFunc = le => le.Instance.StartsWith(instance);
+					whereFunc = le => le.Instance.Contains(instance);
 				}
 				logEvents = logEvents.Where(whereFunc);
 			}
@@ -145,7 +145,7 @@ namespace Adis.Log.Server
 				}
 				else
 				{
-					whereFunc = le => le.Machine.StartsWith(machine);
+					whereFunc = le => le.Machine.Contains(machine);
 				}
 				logEvents = logEvents.Where(whereFunc);
 			}
@@ -164,7 +164,7 @@ namespace Adis.Log.Server
 				}
 				else
 				{
-					whereFunc = le => le.User.StartsWith(user);
+					whereFunc = le => le.User.Contains(user);
 				}
 				logEvents = logEvents.Where(whereFunc);
 			}
