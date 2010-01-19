@@ -51,8 +51,6 @@ p
 	text-align:center;
 	font-weight:bolder;
 	font-size:x-large;
-	padding:0px 5px 5px 5px;
-	margin:-10px -5px 5px -5px;
 }
 
 .top_section
@@ -63,9 +61,6 @@ p
 	top:0px;
 	left:0px;
 	right:0px;
-	padding-top:10px;
-	padding-left:5px;
-	padding-right:5px;
 }
 
 .main_section
@@ -86,10 +81,15 @@ p
 	overflow-y:scroll;
 }
 
+.top_section .last_line
+{
+	margin: 5px 25px 5px 25px;
+}
+
 #severityLegend
 {
 	float: right; 
-	padding:3px;
+	padding:10px 3px 10px 3px;
 }
 
 #pager
@@ -106,24 +106,33 @@ p
 
 .filter_section
 {
-	border: 1px solid #808080;
-	margin-top:5px;
-	margin-bottom:5px;
-	padding:5px;
-	
 }
 
-#filterForm .filter_line>div
+#filterForm .filter_line
 {
-	border: 0px;
-	float:left;
-	margin-left:5px;
+	margin-top:1px;
+	margin-bottom:1px;
+	padding:3px 5px 3px 15px;
+	color:White;
+	background: #003803;
 }
-#filterForm .filter_line>div label
+
+#filterForm .filter_line:first-child
 {
-	display:block;
-	margin-bottom:2px;
+	background: #004A7F;
+}
+
+#filterForm .filter_line>span
+{
+	display:inline-block;
+	margin-left:10px;
+}
+
+#filterForm .filter_line>span label
+{
 	font-weight:bolder;
+	display:inline-block;
+	margin-bottom:2px;
 }
 
 pre
@@ -179,46 +188,59 @@ pre
 }
 .severity_FATAL
 {
-	background-color: #FF5555;
+	background-color: #F94040;
 }
 
 .severity_ERROR
 {
-	background-color: #FF9900;
+	background-color: #FFB03A;
 }
 
 .severity_WARN
 {
-	background-color: #DDDD00;
+	background-color: #FFE875;
 }
 
 .severity_INFO
 {
-	background-color: #DDFFDD;
+	background-color: #E2FFD6;
 }
 
 .severity_DEBUG
 {
-	background-color: #DDDDDD;
+	background-color: #EAEAEA;
 }
 
 .swatch
 {
-	width:100px;
-	margin: 2px 5px 2px 5px;
+	margin: 2px 2px 2px 2px;
 	padding:2px 5px 2px 5px;
 	border:solid 1px Black;
 }
 
 .pager
 {
-	font-size: x-large;
+	font-size:larger;
 }
 
 .pager_item
 {
 	margin-left: 5px;
 	margin-right: 5px;
+	padding:2px;
+	
+	background: #9999FF;
+	cursor:default;
+}
+
+.pager_item.disabled
+{
+	background:#999999;
+}
+
+.pager_item.current_page
+{
+	background: #FF9999;
 }
 
 .current_page
@@ -229,26 +251,6 @@ pre
 .show_extra_info_button
 {
 	border-bottom-width:0px;
-}
-
-.filter_header
-{
-	cursor: hand;
-	font-weight:bold;
-	background-color:#EEEEFF;
-	padding:5px;
-}
-
-.filter_header .filter
-{
-	display: inline-block;
-	float:left;
-	padding:0px 5px 0px 0px;
-}
-
-.filter_header .filter_value
-{
-	color:Red;
 }
 
 .expander
