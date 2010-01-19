@@ -62,6 +62,13 @@ namespace Adis.Log.Reporter.MVC.Controllers
 
 		}
 
+		[AcceptVerbs(HttpVerbs.Get)]
+		public ActionResult ViewList()
+		{
+			return RedirectToAction("Default");
+		}
+
+		[AcceptVerbs(HttpVerbs.Post)]
 		public ActionResult ViewList(
 			string category,
 			string application,
