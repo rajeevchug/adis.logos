@@ -63,40 +63,41 @@
 		using (var form = Html.BeginForm("ViewList", "Main"))
 		{%>
 		<div class="filter_line">
-			<div>
-				<label>Log Server</label>
+			<span>
+				<label>Log Server:</label>
 				<%=Html.DropDownList("logServer", logServers)%>
-			</div>
-			<div>
-				<label>Category</label>
+			</span>
+			<span>
+				<label>Category:</label>
 				<%=Html.DropDownList("category", categories) %>
-			</div>
-			<div>
-				<label>Application</label>
+			</span>
+			<span>
+				<label>Application:</label>
 				<%=Html.DropDownList("application", applications)%>
-			</div>
-			<div>
-				<label>Min Severity</label>
+			</span>
+		</div>
+		<div class="filter_line">
+			<span>
+				<label>Min Severity:</label>
 				<%=Html.DropDownList("severity", severityOptions)%>
-			</div>
-			<div>
-				<label>Start Date</label>
+			</span>
+			<span>
+				<label>Start Date:</label>
 				<%=Html.TextBox("startTime", requestFilter.StartTime, new { style = "width:80px;" })%>
 				
-			</div>
-			<div>
-				<label>Message</label>
+			</span>
+			<span>
+				<label>Message:</label>
 				<%=Html.TextBox("message", requestFilter.Message, new { style = "width:90px;" })%>
-			</div>
-			<div>
-				<label>Other</label>
-				<div>
+			</span>
+			<span>
+				<label>Other:</label>
+				<span>
 					<%=Html.DropDownList("otherFiltersOption", otherFilters)%>
 					<%=Html.TextBox("otherFiltersValue", currentOtherFilterValue, new { style = "width:80px;" })%>
-				</div>
-			</div>
+				</span>
+			</span>
 		</div>
-		<br class="brclear" />
 	<input type="hidden" id="pageNumber" name="pageNumber" value="-1" />
 	<input type="hidden" id="instance" name="instance" value="" />
 	<input type="hidden" id="instanceExact" name="instanceExact" value="false" />
