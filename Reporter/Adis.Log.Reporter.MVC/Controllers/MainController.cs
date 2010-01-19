@@ -114,48 +114,47 @@ namespace Adis.Log.Reporter.MVC.Controllers
 
 			var error = "";
 
-			ReporterContractClient reporterContractClient = null;
-
-			if (string.IsNullOrEmpty(logServer) || !_Addresses.Keys.Contains(logServer))
-			{
-				logServer=_Addresses.Keys.First();
-			}
-
-			reporterContractClient = new ReporterContractClient(_Addresses[logServer]);
-
-			var totalRecordCount = 0;
-			try
-			{
-				totalRecordCount = reporterContractClient == null ? 0 : reporterContractClient.GetCount(filter);
-			}
-			catch (System.ServiceModel.EndpointNotFoundException)
-			{
-				error = string.Format("The log server {0} cannot be found. It may be down.", _Addresses[logServer]);
-			}
-			var recordsToSkip = totalRecordCount < recordsPerPage ? 0 : totalRecordCount - ((pageNumber + 1) * recordsPerPage);
-			var maxPage = totalRecordCount / recordsPerPage;
-
-			//get the last partial page
-			if (recordsToSkip < 0)
-			{
-				recordsToSkip = 0;
-			}
 
 			IEnumerable<LogTransportObject> logsList = new List<LogTransportObject>();
 			IEnumerable<string> categories = new List<string>();
 			IEnumerable<string> applications = new List<string>();
-
-			if (reporterContractClient.State == System.ServiceModel.CommunicationState.Opened)
+			var maxPage = 0;
+			var totalRecordCount = 0;
+			if (!string.IsNullOrEmpty(logServer))
 			{
+				ReporterContractClient reporterContractClient = null;
+
+				reporterContractClient = new ReporterContractClient(_Addresses[logServer]);
+
 				try
 				{
-					logsList = reporterContractClient == null ? new List<LogTransportObject>() : reporterContractClient.GetRecords(filter, recordsToSkip, recordsPerPage).Reverse();
-					categories = GetCategories(_Addresses[logServer], reporterContractClient);
-					applications = GetApplications(_Addresses[logServer], reporterContractClient, category);
+					totalRecordCount = reporterContractClient == null ? 0 : reporterContractClient.GetCount(filter);
 				}
-				catch (Exception e)
+				catch (System.ServiceModel.EndpointNotFoundException)
 				{
-					error = "An error occured while attempting to get the log information : " + e.Message;
+					error = string.Format("The log server {0} cannot be found. It may be down.", _Addresses[logServer]);
+				}
+				var recordsToSkip = totalRecordCount < recordsPerPage ? 0 : totalRecordCount - ((pageNumber + 1) * recordsPerPage);
+				maxPage = totalRecordCount / recordsPerPage;
+
+				//get the last partial page
+				if (recordsToSkip < 0)
+				{
+					recordsToSkip = 0;
+				}
+
+				if (reporterContractClient.State == System.ServiceModel.CommunicationState.Opened)
+				{
+					try
+					{
+						logsList = reporterContractClient == null ? new List<LogTransportObject>() : reporterContractClient.GetRecords(filter, recordsToSkip, recordsPerPage).Reverse();
+						categories = GetCategories(_Addresses[logServer], reporterContractClient);
+						applications = GetApplications(_Addresses[logServer], reporterContractClient, category);
+					}
+					catch (Exception e)
+					{
+						error = "An error occured while attempting to get the log information : " + e.Message;
+					}
 				}
 			}
 			var viewdata = new ListViewData()
@@ -229,7 +228,7 @@ namespace Adis.Log.Reporter.MVC.Controllers
 				var list = _cache[cacheName] as Dictionary<string, IEnumerable<string>>;
 				if (list == null)
 				{
-					list = server.GetApplicationList();
+					list = server.GetApplicationList().OrderBy(c => c.Key).ToDictionary(c => c.Key, c => c.Value.OrderBy(d => d).AsEnumerable());
 					_cache.Add(cacheName, list, TimeSpan.FromHours(1));
 				}
 
@@ -251,7 +250,7 @@ namespace Adis.Log.Reporter.MVC.Controllers
 				var list = _cache[cacheName] as Dictionary<string, IEnumerable<string>>;
 				if (list == null)
 				{
-					list = server.GetApplicationList();
+					list = server.GetApplicationList().OrderBy(c => c.Key).ToDictionary(c => c.Key, c => c.Value.OrderBy(d => d).AsEnumerable());
 					_cache.Add(cacheName, list, TimeSpan.FromHours(1));
 				}
 
