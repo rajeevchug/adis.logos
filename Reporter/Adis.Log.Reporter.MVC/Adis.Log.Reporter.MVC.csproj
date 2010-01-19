@@ -86,6 +86,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\AppHelper.cs" />
+    <Compile Include="Helpers\HtmlExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ICacheProvider.cs" />
     <Compile Include="Providers\WebCacheProvider.cs" />
@@ -106,6 +107,7 @@
     <Content Include="Content\CSS\datePicker.css" />
     <Content Include="Content\CSS\jquery-ui-1.7.2.custom.css" />
     <Content Include="Content\CSS\ListView.css" />
+    <Content Include="Content\CSS\SquareButton.css" />
     <Content Include="Content\Images\add.png" />
     <Content Include="Content\Images\black_banner.png" />
     <Content Include="Content\Images\blue_gradient.png" />
@@ -127,6 +129,16 @@
     <Content Include="Content\Images\jquery-ui\ui-icons_f7a50d_256x240.png" />
     <Content Include="Content\Images\jquery-ui\ui-icons_fcd113_256x240.png" />
     <Content Include="Content\Images\loading.large.gif" />
+    <Content Include="Content\Images\square-blue-left.gif" />
+    <Content Include="Content\Images\square-blue-right.gif" />
+    <Content Include="Content\Images\square-gray-left.gif" />
+    <Content Include="Content\Images\square-gray-right.gif" />
+    <Content Include="Content\Images\square-green-left.gif" />
+    <Content Include="Content\Images\square-green-right.gif" />
+    <Content Include="Content\Images\square-orange-left.gif" />
+    <Content Include="Content\Images\square-orange-right.gif" />
+    <Content Include="Content\Images\square-red-left.gif" />
+    <Content Include="Content\Images\square-red-right.gif" />
     <Content Include="Content\Images\transparent_gradient.png" />
     <Content Include="Content\Script\date.js" />
     <Content Include="Content\Script\jquery-1.3.2.min.js" />
