@@ -47,7 +47,7 @@
 <%}
 	else
 	{ %>
-		 <span class='pager_item disabled'>&gt;</span>
-		 <span class='pager_item disabled'>&gt;&gt;|</span>
+		 <%=Html.ActionButton("", "&gt;&gt;|", ButtonCategories.Disabled)%>
+		 <%=Html.ActionButton("", "&gt;", ButtonCategories.Disabled)%>
 <%} %>
 </div>
