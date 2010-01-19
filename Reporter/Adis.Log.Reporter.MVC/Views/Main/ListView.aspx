@@ -36,7 +36,7 @@
 		<div class="last_line">
 			<div id="submitButton">
 				<%=Html.ActionButton("logging.main.SetPageNumberAndSubmit(1)", "Apply Filters", ButtonCategories.Highlight) %>
-				<%=Html.ActionButton("logging.main.ResetFilterCookies()", "Clear Filters", ButtonCategories.Cancel)%>
+				<%=Html.ActionButton("logging.main.ResetFilters()", "Clear", ButtonCategories.Cancel)%>
 			</div>
 			<div id="pager">
 				<%Html.RenderPartial("Pager"); %>
