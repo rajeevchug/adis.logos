@@ -72,6 +72,8 @@
 			$('#pageNumber').val(pageNumber);
 			$('#loadingImage').css('visibility', 'visible');
 
+			if (!validateDates()) return;
+
 			local.UpdateOtherFiltersValue();
 			document.forms[0].submit();
 		}
@@ -80,7 +82,6 @@
 		{
 			$('#filterForm').slideToggle('slow', function()
 			{
-				var i = 0;
 				$(".main_section").css('top', $(".top_section").height());
 			});
 		}
@@ -180,7 +181,7 @@
 			$('#severity').val($('#severity option:first').val());
 			$('#startTime,#message,#otherFiltersValue').val('');
 			$('#otherFiltersOption').val($('#otherFiltersOption option:first').val());
-			
+
 			EraseCookie("LogServer");
 			EraseCookie("Category");
 			EraseCookie("Application");
@@ -283,6 +284,31 @@
 		return null;
 	}
 
+	function validateDates()
+	{
+		var startDate = Date.fromString($('#startTime').val());
+		var endDate = $('#otherFiltersOption').val() == 'EndDate' ? Date.fromString($('#otherFiltersValue').val()) : null;
+
+		if ($('#startTime').val() != '' && !startDate)
+		{
+			alert("invalid start date format. Use the format " + Date.format);
+			return false;
+		}
+
+		if (endDate != null && !endDate)
+		{
+			alert("invalid end date format. Use the format " + Date.format);
+			return false;
+		}
+
+		if (startDate && endDate && startDate > endDate)
+		{
+			alert('Start date must be earlier than enddate');
+			return false;
+		}
+
+		return true;
+	}
 
 	// set up global object instance
 	if (!window.logging) { window.logging = new function() { } }
