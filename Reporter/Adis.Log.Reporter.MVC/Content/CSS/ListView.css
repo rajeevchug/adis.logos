@@ -6,14 +6,14 @@
 	background-color:#FFFFFF;
 }
 
+input[type=text][disabled]
+{
+	background:#BBBBBB;
+}
+
 form
 {
 	margin:0px;
-}
-
-select
-{
-	border:solid black 1px;
 }
 
 p
@@ -117,10 +117,26 @@ p
 	background: #003803;
 }
 
+/*
+#filterForm .filter_line select, #filterForm .filter_line input
+{
+	color:White;
+	background:#306833;
+}
+*/
+
 #filterForm .filter_line:first-child
 {
 	background: #004A7F;
 }
+
+/*
+#filterForm .filter_line:first-child select, #filterForm .filter_line:first-child input
+{
+	color:White;
+	background:#307AAF;
+}
+*/
 
 #filterForm .filter_line>span
 {
@@ -216,6 +232,7 @@ pre
 	margin: 2px 2px 2px 2px;
 	padding:2px 5px 2px 5px;
 	border:solid 1px Black;
+	cursor:default;
 }
 
 .pager
