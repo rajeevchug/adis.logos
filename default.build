@@ -95,6 +95,21 @@
 				<exclude name="**/*dbml*"/>
 			</fileset>
 		</zip>
+		<zip zipfile="./Deploy/Adis.log.Reporter.zip">
+			<fileset basedir="./Reporter/Adis.Log.Reporter">
+				<include name="**/*" />
+				<exclude name="**/obj/**" />
+				<exclude name="**/_vti_*/*" />
+				<exclude name="**/Web References/**" />
+				<exclude name="**/*.csproj" />
+				<exclude name="**/*.csproj.webinfo" />
+				<exclude name="**/*.cs" />
+				<exclude name="**/*.resx" />
+				<exclude name="**/*.txt" />
+				<exclude name="**/logfile*"/>
+				<exclude name="**/*dbml*"/>
+			</fileset>
+		</zip>
 		<call target="useDevConfigFiles"/>
 	</target>
 
