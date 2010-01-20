@@ -42,7 +42,7 @@
 		 <%=Html.ActionButton("", "...", ButtonCategories.None)%>
 			<%=Html.ActionButton("logging.main.SetPageNumberAndSubmit(" + maxPage + ")", maxPage.ToString(), ButtonCategories.Normal) %>
 		 <%} %>
-			<%=Html.ActionButton("logging.main.SetPageNumberAndSubmit(" + Model.Page + 1 + ")", "&gt;", ButtonCategories.Normal)%>
+			<%=Html.ActionButton("logging.main.SetPageNumberAndSubmit(" + (Model.Page + 1) + ")", "&gt;", ButtonCategories.Normal)%>
 			<%=Html.ActionButton("logging.main.SetPageNumberAndSubmit(" + maxPage + ")", "&gt;&gt;|", ButtonCategories.Normal) %>
 <%}
 	else
