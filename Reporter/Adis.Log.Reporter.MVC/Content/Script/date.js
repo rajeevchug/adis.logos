@@ -459,8 +459,10 @@ Date.fullYearStart = '20';
 					if (Date.abbrMonthNames[i] == mStr) break;
 				}
 				d.setMonth(i);
-			} else {
-				d.setMonth(Number(s.substr(f.indexOf('mm'), 2)) - 1);
+			} else
+			{
+				var strMonth = s.substr(f.indexOf('mm'), 2).replace(new RegExp("\/"), '');
+				d.setMonth(Number(strMonth) - 1);
 			}
 		}
 		
