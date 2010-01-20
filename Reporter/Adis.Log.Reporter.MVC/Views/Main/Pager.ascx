@@ -27,7 +27,7 @@
 	{
 		if (i == Model.Page)
 		{
-			Response.Write(Html.ActionButton("", i.ToString(), ButtonCategories.None));
+			Response.Write(Html.ActionButton("", "Page " + i.ToString(), ButtonCategories.None));
 		}
 		else
 		{
