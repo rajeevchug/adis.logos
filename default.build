@@ -96,7 +96,7 @@
 			</fileset>
 		</zip>
 		<zip zipfile="./Deploy/Adis.log.Reporter.zip">
-			<fileset basedir="./Reporter/Adis.Log.Reporter">
+			<fileset basedir="./Reporter/Adis.Log.Reporter.MVC">
 				<include name="**/*" />
 				<exclude name="**/obj/**" />
 				<exclude name="**/_vti_*/*" />
