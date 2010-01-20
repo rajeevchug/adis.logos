@@ -69,10 +69,10 @@
 
 		, SetPageNumberAndSubmit: function(pageNumber)
 		{
+			if (!validateDates()) return;
+
 			$('#pageNumber').val(pageNumber);
 			$('#loadingImage').css('visibility', 'visible');
-
-			if (!validateDates()) return;
 
 			local.UpdateOtherFiltersValue();
 			document.forms[0].submit();
@@ -217,7 +217,13 @@
 			{
 				$valueTextbox.next('a.dp-choose-date').css('visibility', 'hidden');
 			}
-
+			if ($('#otherFiltersOption').val() == "")
+			{
+				$valueTextbox.attr('disabled', 'disabled');
+			} else
+			{
+				$valueTextbox.attr('disabled', '');
+			}
 		}
 
 		, UpdateOtherFiltersValue: function()
@@ -287,7 +293,9 @@
 	function validateDates()
 	{
 		var startDate = Date.fromString($('#startTime').val());
-		var endDate = $('#otherFiltersOption').val() == 'EndDate' ? Date.fromString($('#otherFiltersValue').val()) : null;
+		var endDate = $('#otherFiltersOption').val() != 'EndDate' || $('#otherFiltersValue').val() == "" ?
+			null
+			: Date.fromString($('#otherFiltersValue').val());
 
 		if ($('#startTime').val() != '' && !startDate)
 		{
