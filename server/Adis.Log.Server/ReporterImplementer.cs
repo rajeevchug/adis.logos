@@ -113,14 +113,15 @@ namespace Adis.Log.Server
 		public static Dictionary<string, IEnumerable<string>> GetApplicationList(IRepository repository, Uri remoteAddress)
 		{
 			ILog internalLog = LogManager.GetLogger(typeof(ReporterImplementer));
-			//var applications = repository.GetAllLogLogEvents().Select(c => c.Application).Distinct().ToList();
 			var applications = (from log in repository.GetAllLogLogEvents()
-													group log by log.Category
-												 ).ToDictionary(c => c.Key, c => (IEnumerable<string>)c.Select(d => d.Application).Distinct().ToList());
-
+													group log by new { category = log.Category, application = log.Application } into grp
+													select grp.Key
+												 ).ToList();
+			var apps = applications.Select(c=>c.category).Distinct()
+				.ToDictionary(category=>category, category=>applications.Where(d=>d.category==category).Select(d=>d.application));
 			internalLog.DebugFormat("supplying {0} records to reporter client (remote address {1})", applications.Count,
 				remoteAddress);
-			return applications;
+			return apps;
 		}
 	}
 }
