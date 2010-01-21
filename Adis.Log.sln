@@ -32,9 +32,17 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BD670D04-04D4-4931-B755-3EB95181B083}"
 	ProjectSection(SolutionItems) = preProject
 		Adis.Log.vsmdi = Adis.Log.vsmdi
+		default.build = default.build
+		default.build.MailSettings.include = default.build.MailSettings.include
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adis.Log.Reporter.Client", "client\dotnet\Adis.Log.Reporter.Client\Adis.Log.Reporter.Client.csproj", "{A35CC3F8-3EBD-4721-B681-91243FE756F5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Reporter", "Reporter", "{E4AD67C6-3963-446C-832D-44E27E22F044}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adis.Log.Reporter.MVC", "Reporter\Adis.Log.Reporter.MVC\Adis.Log.Reporter.MVC.csproj", "{2A08BEC1-738A-4AC4-AADE-A0F7BBC65D9D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adis.Log.Server.Web", "server\Adis.Log.Server.Web\Adis.Log.Server.Web.csproj", "{E65FB44E-51CF-491B-B802-735F24F665C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -126,6 +134,26 @@ Global
 		{A35CC3F8-3EBD-4721-B681-91243FE756F5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A35CC3F8-3EBD-4721-B681-91243FE756F5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{A35CC3F8-3EBD-4721-B681-91243FE756F5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{2A08BEC1-738A-4AC4-AADE-A0F7BBC65D9D}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{2A08BEC1-738A-4AC4-AADE-A0F7BBC65D9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A08BEC1-738A-4AC4-AADE-A0F7BBC65D9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A08BEC1-738A-4AC4-AADE-A0F7BBC65D9D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{2A08BEC1-738A-4AC4-AADE-A0F7BBC65D9D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{2A08BEC1-738A-4AC4-AADE-A0F7BBC65D9D}.Release|.NET.ActiveCfg = Release|Any CPU
+		{2A08BEC1-738A-4AC4-AADE-A0F7BBC65D9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A08BEC1-738A-4AC4-AADE-A0F7BBC65D9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A08BEC1-738A-4AC4-AADE-A0F7BBC65D9D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{2A08BEC1-738A-4AC4-AADE-A0F7BBC65D9D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{E65FB44E-51CF-491B-B802-735F24F665C5}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{E65FB44E-51CF-491B-B802-735F24F665C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E65FB44E-51CF-491B-B802-735F24F665C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E65FB44E-51CF-491B-B802-735F24F665C5}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{E65FB44E-51CF-491B-B802-735F24F665C5}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{E65FB44E-51CF-491B-B802-735F24F665C5}.Release|.NET.ActiveCfg = Release|Any CPU
+		{E65FB44E-51CF-491B-B802-735F24F665C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E65FB44E-51CF-491B-B802-735F24F665C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E65FB44E-51CF-491B-B802-735F24F665C5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{E65FB44E-51CF-491B-B802-735F24F665C5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -133,6 +161,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{B81B7089-B0D3-4E13-BCAE-E9BFF94CDBFC} = {95320B6E-866D-43C7-B86E-13584038467B}
 		{E643DD64-5FF5-48CF-9013-BA11DAFD546E} = {95320B6E-866D-43C7-B86E-13584038467B}
+		{E65FB44E-51CF-491B-B802-735F24F665C5} = {95320B6E-866D-43C7-B86E-13584038467B}
 		{09387DBB-DDC2-4E49-8575-2C044FF8F393} = {18B426E3-16EC-40F9-80E4-DD9DE8C74A8D}
 		{C1415138-DC9C-4DDE-81AA-CEAAA383B823} = {18B426E3-16EC-40F9-80E4-DD9DE8C74A8D}
 		{A35CC3F8-3EBD-4721-B681-91243FE756F5} = {18B426E3-16EC-40F9-80E4-DD9DE8C74A8D}
@@ -142,5 +171,6 @@ Global
 		{0A766CF4-44CB-48E6-86AC-0DF131E38AF3} = {12779476-A292-4798-A46D-E76A186350BC}
 		{F0C1E2B0-ED18-447E-90B4-3C726762DB72} = {E643DD64-5FF5-48CF-9013-BA11DAFD546E}
 		{F10DB9CA-335E-497D-AD86-157778E8854F} = {D99753DF-C6E4-4587-85CC-C5FEAFDEA473}
+		{2A08BEC1-738A-4AC4-AADE-A0F7BBC65D9D} = {E4AD67C6-3963-446C-832D-44E27E22F044}
 	EndGlobalSection
 EndGlobal
