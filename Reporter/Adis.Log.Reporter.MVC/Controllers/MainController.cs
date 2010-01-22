@@ -98,7 +98,9 @@ namespace Adis.Log.Reporter.MVC.Controllers
 			var filter = new RequestFilter()
 			{
 				Category = category == "" ? null : category,
+				CategoryExactMatch = true,
 				Application = application == "" ? null : application,
+				ApplicationExactMatch = true,
 				Instance = instance == "" ? null : instance,
 				InstanceExactMatch = instanceExact,
 				User = user == "" ? null : user,
