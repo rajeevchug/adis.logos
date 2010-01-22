@@ -81,7 +81,7 @@
 		</zip>
 
 		<zip zipfile="./Deploy/Adis.log.Server.zip">
-			<fileset basedir="./server/Adis.log.Server">
+			<fileset basedir="./server/Adis.log.Server.Web">
 				<include name="**/*" />
 				<exclude name="**/obj/**" />
 				<exclude name="**/_vti_*/*" />
