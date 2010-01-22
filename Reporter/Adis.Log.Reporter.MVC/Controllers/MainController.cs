@@ -111,7 +111,7 @@ namespace Adis.Log.Reporter.MVC.Controllers
 				EndTime = endTime,
 				Message = message == "" ? null : message,
 				MessageExactMatch = false,
-				Severity = severity == Severity.All ? Severity.Debug.ToString() : severity.ToString(),
+				Severity = severity == Severity.All ? (string)null : severity.ToString(),
 			};
 
 			var error = "";
