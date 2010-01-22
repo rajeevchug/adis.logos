@@ -125,8 +125,12 @@
 					$categoryDropdown.html('');
 					for (var i = 0; i < jsonReply.length; i++)
 					{
-						var application = jsonReply[i];
-						$categoryDropdown.append("<option value='" + application + "'>" + application + "</option>");
+						var category = jsonReply[i];
+						$categoryDropdown.append("<option value='" + category + "'>" + category + "</option>");
+					}
+					if (currentCategory == null || currentCategory == '')
+					{
+						currentCategory = jsonReply[0];
 					}
 					$categoryDropdown.val(currentCategory);
 					$categoryDropdown.css('width', 'auto');
