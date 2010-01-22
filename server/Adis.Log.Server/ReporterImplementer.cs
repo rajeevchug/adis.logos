@@ -118,7 +118,8 @@ namespace Adis.Log.Server
 													select grp.Key
 												 ).ToList();
 			var apps = applications.Select(c=>c.category).Distinct()
-				.ToDictionary(category=>category, category=>applications.Where(d=>d.category==category).Select(d=>d.application));
+				.ToDictionary(category=>category, 
+				category=>(IEnumerable<string>)applications.Where(d=>d.category==category).Select(d=>d.application).ToList());
 			internalLog.DebugFormat("supplying {0} records to reporter client (remote address {1})", applications.Count,
 				remoteAddress);
 			return apps;
