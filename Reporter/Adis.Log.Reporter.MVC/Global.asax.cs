@@ -20,9 +20,21 @@ namespace Adis.CA.Web
 
 
 			routes.MapRoute(
+				"ViewList_Get",
+				"Main.mvc/ViewList/page/{pageNumber}",
+				new { controller = "Main", action = "ViewList" }
+			);
+
+			routes.MapRoute(
+				"default ViewList_Get",
+				"Main.mvc/ViewList",
+				new { controller = "Main", action = "ViewList", pageNumber = 1 }
+			);
+
+			routes.MapRoute(
 				"Default",
 				"{controller}.mvc/{action}/{id}",
-				new { controller = "Main", action = "Test", id = "" }
+				new { controller = "Main", action = "Default", id = "" }
 			);
 
 		}
