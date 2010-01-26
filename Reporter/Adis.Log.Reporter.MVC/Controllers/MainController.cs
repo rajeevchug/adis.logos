@@ -16,6 +16,26 @@ namespace Adis.Log.Reporter.MVC.Controllers
 
 	public class MainController : Controller
 	{
+		private struct Cookies
+		{
+			public static string Category = "LogReporterCategory";
+			public static string Application = "LogReporterApplication";
+			public static string LogServer = "LogReporterLogServer";
+			public static string Instance = "LogReporterInstance";
+			public static string User = "LogReporterUser";
+			public static string Machine = "LogReporterMachine";
+			public static string Message = "LogReporterMessage";
+			public static string Severity = "LogReporterSeverity";
+			public static string MachineExact = "machineExact";
+			public static string UserExact = "userExact";
+			public static string InstanceExact = "instanceExact";
+			public static string EndTime = "LogReporterEndTime";
+			public static string StartTime = "LogReporterStartTime";
+			public static string MachineExactMatch = "LogReporterMachineExactMatch";
+			public static string UserExactMatch = "LogReporterUserExactMatch";
+			public static string InstanceExactMatch = "LogReporterInstanceExactMatch";
+		}
+
 		private IDictionary<string, string> _Addresses;
 		private static readonly string CACHE_CATEGORIES = "categories";
     private ICacheProvider _cache;
@@ -29,43 +49,41 @@ namespace Adis.Log.Reporter.MVC.Controllers
 
 		public ActionResult Default()
 		{
+			return ViewList(null);
+		}
 
+		[AcceptVerbs(HttpVerbs.Get)]
+		public ActionResult ViewList(int? pageNumber)
+		{
 			DateTime startTime = DateTime.MinValue;
-			DateTime.TryParse(Request.Cookies["startTime"] == null ? "" : Request.Cookies["startTime"].Value, out startTime);
+			DateTime.TryParse(Request.Cookies[Cookies.StartTime] == null ? "" : Request.Cookies[Cookies.StartTime].Value, out startTime);
 			DateTime endTime = DateTime.MinValue;
-			DateTime.TryParse(Request.Cookies["endTime"] == null ? "" : Request.Cookies["endTime"].Value, out endTime);
+			DateTime.TryParse(Request.Cookies[Cookies.EndTime] == null ? "" : Request.Cookies[Cookies.EndTime].Value, out endTime);
 			bool instanceExact = false;
-			if (Request.Cookies["instanceExact"] != null) bool.TryParse(Request.Cookies["instanceExact"].Value, out instanceExact);
+			if (Request.Cookies[Cookies.InstanceExact] != null) bool.TryParse(Request.Cookies[Cookies.InstanceExact].Value, out instanceExact);
 			bool userExact = false;
-			if (Request.Cookies["userExact"] != null) bool.TryParse(Request.Cookies["userExact"].Value, out userExact);
+			if (Request.Cookies[Cookies.UserExact] != null) bool.TryParse(Request.Cookies[Cookies.UserExact].Value, out userExact);
 			bool machineExact = false;
-			if (Request.Cookies["machineExact"] != null) bool.TryParse(Request.Cookies["machineExact"].Value, out machineExact);
+			if (Request.Cookies[Cookies.MachineExact] != null) bool.TryParse(Request.Cookies[Cookies.MachineExact].Value, out machineExact);
 			Severity severity = Severity.All;
-			if (!CookieIsBlank(Request.Cookies["severity"])) severity = (Severity)Enum.Parse(typeof(Severity), Request.Cookies["severity"].Value);
-
-			return ViewList(
-				CookieIsBlank(Request.Cookies["category"]) ? null : Request.Cookies["category"].Value,
-				CookieIsBlank(Request.Cookies["application"]) ? null : Request.Cookies["application"].Value,
-				CookieIsBlank(Request.Cookies["instance"]) ? null : Request.Cookies["instance"].Value,
-				CookieIsBlank(Request.Cookies["user"]) ? null : Request.Cookies["user"].Value,
-				CookieIsBlank(Request.Cookies["machine"]) ? null : Request.Cookies["machine"].Value,
-				CookieIsBlank(Request.Cookies["message"]) ? null : Request.Cookies["message"].Value,
+			if (!CookieIsBlank(Request.Cookies[Cookies.Severity])) severity = (Severity)Enum.Parse(typeof(Severity), Request.Cookies[Cookies.Severity].Value);
+			
+      return ViewList(
+				CookieIsBlank(Request.Cookies[Cookies.Category]) ? null : Request.Cookies[Cookies.Category].Value,
+				CookieIsBlank(Request.Cookies[Cookies.Application]) ? null : Request.Cookies[Cookies.Application].Value,
+				CookieIsBlank(Request.Cookies[Cookies.Instance]) ? null : Request.Cookies[Cookies.Instance].Value,
+				CookieIsBlank(Request.Cookies[Cookies.User]) ? null : Request.Cookies[Cookies.User].Value,
+				CookieIsBlank(Request.Cookies[Cookies.Machine]) ? null : Request.Cookies[Cookies.Machine].Value,
+				CookieIsBlank(Request.Cookies[Cookies.Message]) ? null : Request.Cookies[Cookies.Message].Value,
 				severity,
 				startTime == DateTime.MinValue ? null : (DateTime?)startTime,
 				endTime == DateTime.MinValue ? null : (DateTime?)endTime,
 				instanceExact,
 				userExact,
 				machineExact,
-				1,
-				CookieIsBlank(Request.Cookies["LogServer"]) ? null : Request.Cookies["LogServer"].Value
+				pageNumber == null ? 1 : pageNumber.Value,
+				CookieIsBlank(Request.Cookies[Cookies.LogServer]) ? null : Request.Cookies[Cookies.LogServer].Value
 			 );
-
-		}
-
-		[AcceptVerbs(HttpVerbs.Get)]
-		public ActionResult ViewList()
-		{
-			return RedirectToAction("Default");
 		}
 
 		[AcceptVerbs(HttpVerbs.Post)]
@@ -176,22 +194,19 @@ namespace Adis.Log.Reporter.MVC.Controllers
 
 			viewdata.MaxPage = (int)System.Math.Ceiling((double)viewdata.TotalRecords / (double)recordsPerPage);
 
-			Response.Cookies.Set(new System.Web.HttpCookie("Category", filter.Category) { Expires = DateTime.Now.AddDays(365) });
-			Response.Cookies.Set(new System.Web.HttpCookie("CategoryExactMatch", filter.CategoryExactMatch.ToString()) { Expires = DateTime.Now.AddDays(365) });
-			Response.Cookies.Set(new System.Web.HttpCookie("Application", filter.Application) { Expires = DateTime.Now.AddDays(365) });
-			Response.Cookies.Set(new System.Web.HttpCookie("ApplicationExactMatch", filter.ApplicationExactMatch.ToString()) { Expires = DateTime.Now.AddDays(365) });
-			Response.Cookies.Set(new System.Web.HttpCookie("Instance", filter.Instance) { Expires = DateTime.Now.AddDays(365) });
-			Response.Cookies.Set(new System.Web.HttpCookie("InstanceExactMatch", filter.InstanceExactMatch.ToString()) { Expires = DateTime.Now.AddDays(365) });
-			Response.Cookies.Set(new System.Web.HttpCookie("User", filter.User) { Expires = DateTime.Now.AddDays(365) });
-			Response.Cookies.Set(new System.Web.HttpCookie("UserExactMatch", filter.UserExactMatch.ToString()) { Expires = DateTime.Now.AddDays(365) });
-			Response.Cookies.Set(new System.Web.HttpCookie("Machine", filter.Machine) { Expires = DateTime.Now.AddDays(365) });
-			Response.Cookies.Set(new System.Web.HttpCookie("MachineExactMatch", filter.MachineExactMatch.ToString()) { Expires = DateTime.Now.AddDays(365) });
-			Response.Cookies.Set(new System.Web.HttpCookie("StartTime", filter.StartTime.ToString()) { Expires = DateTime.Now.AddDays(365) });
-			Response.Cookies.Set(new System.Web.HttpCookie("EndTime", filter.EndTime.ToString()) { Expires = DateTime.Now.AddDays(365) });
-			Response.Cookies.Set(new System.Web.HttpCookie("Message", filter.Message) { Expires = DateTime.Now.AddDays(365) });
-			Response.Cookies.Set(new System.Web.HttpCookie("Severity", filter.Severity) { Expires = DateTime.Now.AddDays(365) });
-			Response.Cookies.Set(new System.Web.HttpCookie("LogServer", logServer) { Expires = DateTime.Now.AddDays(365) });
-
+			Response.Cookies.Set(new System.Web.HttpCookie(Cookies.Category, filter.Category) { Expires = DateTime.Now.AddDays(365) });
+			Response.Cookies.Set(new System.Web.HttpCookie(Cookies.Application, filter.Application) { Expires = DateTime.Now.AddDays(365) });
+			Response.Cookies.Set(new System.Web.HttpCookie(Cookies.Instance, filter.Instance) { Expires = DateTime.Now.AddDays(365) });
+			Response.Cookies.Set(new System.Web.HttpCookie(Cookies.InstanceExactMatch, filter.InstanceExactMatch.ToString()) { Expires = DateTime.Now.AddDays(365) });
+			Response.Cookies.Set(new System.Web.HttpCookie(Cookies.User, filter.User) { Expires = DateTime.Now.AddDays(365) });
+			Response.Cookies.Set(new System.Web.HttpCookie(Cookies.UserExactMatch, filter.UserExactMatch.ToString()) { Expires = DateTime.Now.AddDays(365) });
+			Response.Cookies.Set(new System.Web.HttpCookie(Cookies.Machine, filter.Machine) { Expires = DateTime.Now.AddDays(365) });
+			Response.Cookies.Set(new System.Web.HttpCookie(Cookies.MachineExactMatch, filter.MachineExactMatch.ToString()) { Expires = DateTime.Now.AddDays(365) });
+			Response.Cookies.Set(new System.Web.HttpCookie(Cookies.StartTime, filter.StartTime.ToString()) { Expires = DateTime.Now.AddDays(365) });
+			Response.Cookies.Set(new System.Web.HttpCookie(Cookies.EndTime, filter.EndTime.ToString()) { Expires = DateTime.Now.AddDays(365) });
+			Response.Cookies.Set(new System.Web.HttpCookie(Cookies.Message, filter.Message) { Expires = DateTime.Now.AddDays(365) });
+			Response.Cookies.Set(new System.Web.HttpCookie(Cookies.Severity, filter.Severity) { Expires = DateTime.Now.AddDays(365) });
+			Response.Cookies.Set(new System.Web.HttpCookie(Cookies.LogServer, logServer) { Expires = DateTime.Now.AddDays(365) });
 			return View("ListView", viewdata);
 		}
 
