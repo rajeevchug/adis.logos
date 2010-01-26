@@ -185,17 +185,6 @@
 			$('#severity').val($('#severity option:first').val());
 			$('#startTime,#message,#otherFiltersValue').val('');
 			$('#otherFiltersOption').val($('#otherFiltersOption option:first').val());
-
-			EraseCookie("LogServer");
-			EraseCookie("Category");
-			EraseCookie("Application");
-			EraseCookie("Severity");
-			EraseCookie("Machine");
-			EraseCookie("Instance");
-			EraseCookie("User");
-			EraseCookie("StartTime");
-			EraseCookie("EndTime");
-
 		}
 
 		, ResetOtherOptionsTextbox: function(resetValuesTextbox)
