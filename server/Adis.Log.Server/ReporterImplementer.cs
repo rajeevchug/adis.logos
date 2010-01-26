@@ -28,7 +28,8 @@ namespace Adis.Log.Server
 			IRepository repository, Uri remoteAddress, bool useTimeLoggedNotEventTime)
 		{
 			ILog internalLog = LogManager.GetLogger(typeof(ReporterImplementer));
-			IQueryable<LogEvent> logEvents = repository.GetAllLogLogEvents();
+			IQueryable<LogEvent> logEvents = repository.GetAllLogLogEvents()
+				.OrderBy(c => c.EventTime);
 
 			logEvents = logEvents.WithId(filter.Id)
 				.WithApplication(filter.Application, filter.ApplicationExactMatch)
