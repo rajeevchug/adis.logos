@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Database Name="Logger" Class="LoggerDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=.;Initial Catalog=Logger;Integrated Security=True" SettingsObjectName="Adis.Log.Properties.Settings" SettingsPropertyName="LoggerConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.LogEvent" Member="LogEvents">
+    <Type Name="LogEvent">
+      <Column Name="EventID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Application" Type="System.String" DbType="VarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="Instance" Type="System.String" DbType="VarChar(256)" CanBeNull="true" />
+      <Column Name="Machine" Type="System.String" DbType="VarChar(256)" CanBeNull="true" />
+      <Column Name="[User]" Member="User" Type="System.String" DbType="VarChar(256)" CanBeNull="true" />
+      <Column Name="Severity" Type="System.String" DbType="VarChar(5) NOT NULL" CanBeNull="false" />
+      <Column Name="Category" Type="System.String" DbType="VarChar(64)" CanBeNull="true" />
+      <Column Name="TimeLogged" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="EventTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Message" Type="System.String" DbType="VarChar(2048) NOT NULL" CanBeNull="false" />
+      <Column Name="ExtraInfo" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+    </Type>
+  </Table>
+</Database>

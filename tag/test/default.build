@@ -1,0 +1,157 @@
+<?xml version="1.0"?>
+<project name="Log" default="rebuild">
+	<loadtasks assembly="${nant::get-base-directory()}\Nant.Contrib.Tasks.dll"/>
+
+	<include buildfile="default.build.MailSettings.include"/>	
+	
+	<property name="configuration" value="debug" unless="${property::exists('configuration')}"/>
+
+	<target name="rebuild" depends="clean, cvsupdate, build, performtests, package "/>
+
+	<target name="clean">
+		<delete>
+			<fileset>
+				<include name="**\bin\**"/>
+				<include name="**\obj\**"/>
+				<include name="**.user"/>
+				<include name="**.suo"/>
+				<include name="**\output.log*"/>
+				<include name="**\Deploy\**"/>
+				<include name="**\TestResults\**"/>
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="cvsupdate">
+		<if test="${directory::exists('CVS')}">
+			<cvs-update cvsroot="\\aionfp1\cvs\cvsroot" module="logos" destination="." usesharpcvslib="false"/>
+		</if>
+	</target>
+
+	<target name="build" >
+		<foreach item="File" property="projectFile">
+			<in>
+				<items>
+					<include name="**Adis.Log.Contract.csproj"/>
+					<include name="**.csproj"/>
+					<exclude name="**test**"/>
+				</items>
+			</in>
+			<do>
+				<echo message="-----------------------------------------------------------------------------"/>
+				<msbuild project="${projectFile}" verbosity="normal" />
+			</do>
+		</foreach>
+	</target>
+
+	<target name="performtests">
+		<property name="test.out.dir" value="${directory::get-current-directory()}\TestResults"/>
+		<if test="${not directory::exists(test.out.dir)}">
+			<mkdir dir="${test.out.dir}"/>
+		</if>
+
+		<foreach item="File" property="testAssembly">
+			<in>
+				<items>
+					<include name="**bin/**.tests.dll"/>
+				</items> 
+			</in>
+			<do>
+				<property name="resultsfile" value="${test.out.dir}\${path::get-file-name(testAssembly)}.trx"/>
+				<delete file="${resultsfile}" if="${file::exists(resultsfile)}"/>
+				<exec program="mstest.exe"
+					commandline="/testcontainer:${testAssembly} /resultsfile:${resultsfile} /nologo" failonerror="false"/>
+			</do>
+		</foreach>
+		
+		
+	</target>
+
+	<target name="package">
+		<if test="${not directory::exists( './Deploy' )}">
+			<mkdir dir="Deploy" />
+		</if>
+
+		<call target="useLiveConfigFiles"/>
+
+		<zip zipfile="./Deploy/Adis.log.Listener.Winforms.zip">
+			<fileset basedir="./listeners/Adis.log.Listener.Winforms/bin/${configuration}">
+				<include name="**"/>
+			</fileset>
+		</zip>
+
+		<zip zipfile="./Deploy/Adis.log.Server.zip">
+			<fileset basedir="./server/Adis.log.Server.Web">
+				<include name="**/*" />
+				<exclude name="**/obj/**" />
+				<exclude name="**/_vti_*/*" />
+				<exclude name="**/Web References/**" />
+				<exclude name="**/*.csproj" />
+				<exclude name="**/*.csproj.webinfo" />
+				<exclude name="**/*.cs" />
+				<exclude name="**/*.resx" />
+				<exclude name="**/*.txt" />
+				<exclude name="**/logfile*"/>
+				<exclude name="**/*dbml*"/>
+			</fileset>
+		</zip>
+		<zip zipfile="./Deploy/Adis.log.Reporter.zip">
+			<fileset basedir="./Reporter/Adis.Log.Reporter.MVC">
+				<include name="**/*" />
+				<exclude name="**/obj/**" />
+				<exclude name="**/_vti_*/*" />
+				<exclude name="**/Web References/**" />
+				<exclude name="**/*.csproj" />
+				<exclude name="**/*.csproj.webinfo" />
+				<exclude name="**/*.cs" />
+				<exclude name="**/*.resx" />
+				<exclude name="**/*.txt" />
+				<exclude name="**/logfile*"/>
+				<exclude name="**/*dbml*"/>
+			</fileset>
+		</zip>
+		<call target="useDevConfigFiles"/>
+	</target>
+
+	<target name="useLiveConfigFiles">
+		<foreach item="File" property="configFile">
+			<in>
+				<items>
+					<exclude name="**.*.config"/>
+					<include name="**.config"/>
+				</items>
+			</in>
+			<do>
+				<property name="directory" value="${path::get-directory-name(configFile)}"/>
+				<property name="baseFilename" value="${path::get-file-name-without-extension(configFile)}"/>
+				<property name="liveFilename" value="${path::combine(directory, baseFilename + '.LIVE.config')}"/>
+				<property name="devFilename" value="${path::combine(directory, baseFilename + '.DEV.config')}"/>
+
+				<if test="${file::exists(liveFilename)}">
+					<copy file="${configFile}" tofile="${devFilename}" overwrite="true"/>
+					<copy file="${liveFilename}" tofile="${configFile}" overwrite="true"/>
+				</if>
+			</do>
+		</foreach>
+	</target>
+
+	<target name="useDevConfigFiles">
+		<foreach item="File" property="configFile">
+			<in>
+				<items>
+					<exclude name="**.*.config"/>
+					<include name="**.config"/>
+				</items>
+			</in>
+			<do>
+				<property name="directory" value="${path::get-directory-name(configFile)}"/>
+				<property name="baseFilename" value="${path::get-file-name-without-extension(configFile)}"/>
+				<property name="devFilename" value="${path::combine(directory, baseFilename + '.DEV.config')}"/>
+
+				<if test="${file::exists(devFilename)}">
+					<copy file="${devFilename}" tofile="${configFile}" overwrite="true"/>
+				</if>
+			</do>
+		</foreach>
+	</target>
+</project>

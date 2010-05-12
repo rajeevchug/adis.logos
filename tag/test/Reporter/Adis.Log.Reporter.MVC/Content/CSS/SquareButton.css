@@ -1,0 +1,100 @@
+﻿a.squarebutton, a.squarebutton[class~="squarebutton_Disabled"]:hover
+{
+	display: inline-block;
+	font: normal 11px "Arial Black"; /* Change 12px as desired */
+	line-height: 15px; /* This value + 4px + 4px (top and bottom padding of SPAN) must equal height of button background (default is 23px) */
+	height: 23px; /* Height of button background height */
+	padding-left: 9px; /* Width of left menu image */
+	text-decoration: none;
+	margin:2px;
+	background-position:left top;
+	background-repeat:no-repeat;
+}
+a:link.squarebutton, a:visited.squarebutton, a:active.squarebutton
+{
+	color: #494949; 
+}
+
+.squarebutton img
+{
+	vertical-align: middle;
+}
+
+a.squarebutton span, a.squarebutton[class~="squarebutton_Disabled"]:hover span
+{
+	display: inline-block;
+	padding: 4px 9px 4px 0;
+	text-align: center;
+	cursor: hand;
+	background-position: right top;
+	background-repeat: no-repeat;
+	color: #494949;
+}
+
+a.squarebutton.squarebutton_Disabled:hover span
+{
+cursor:default;
+}
+
+a.squarebutton:hover
+{ 
+	background-position: bottom left;
+}
+a.squarebutton:hover span
+{ 
+	background-position: bottom right;
+	color: black;
+}
+a.squarebutton_Cancel
+{
+	background-image: url('../images/square-red-left.gif');
+}
+a.squarebutton_Cancel span
+{
+	background-image: url('../images/square-red-right.gif');
+}
+a.squarebutton_Normal,a.squarebutton_Close
+{
+	background-image: url('../images/square-blue-left.gif');
+}
+a.squarebutton_Normal span,a.squarebutton_Close span
+{
+	background-image: url('../images/square-blue-right.gif');
+}
+a.squarebutton_Option
+{
+	background-image: url('../images/square-green-left.gif');
+}
+a.squarebutton_Option span
+{
+	background-image: url('../images/square-green-right.gif');
+}
+a.squarebutton_Highlight
+{
+	background-image: url('../images/square-orange-left.gif');
+}
+a.squarebutton_Highlight span
+{
+	background-image: url('../images/square-orange-right.gif');
+}
+a.squarebutton_Disabled
+{
+	background-image: url('../images/square-gray-left.gif');
+	cursor:default;
+}
+a.squarebutton_Disabled span
+{
+	background-image: url('../images/square-gray-right.gif');
+	cursor:default;
+}
+a.squarebutton[class~="squarebutton_None"]:hover, a.squarebutton[class~="squarebutton_None"]:hover span  /* These buttons should not be clickable. */
+{
+	cursor: default;
+}
+.buttonwrapper
+{ 
+	xoverflow: hidden; 
+	xwidth:200px;
+	display:inline;
+	xborder: dotted 1px magenta;
+}
