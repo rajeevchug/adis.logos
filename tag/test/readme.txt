@@ -12,3 +12,5 @@ The 'client' sub-directory contains adapters for tools and systems to incorporat
 
 The 'server' sub-directory contains the service to receive all log messages and retain them in a repository. The server also provides a subscribe system where listeners can get notified of selected incoming log messages.
 
+dfg./,khjsdgm,jhsdfmnz.gfzd
+
