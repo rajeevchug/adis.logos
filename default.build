@@ -74,13 +74,13 @@
 
 		<call target="useLiveConfigFiles"/>
 
-		<zip zipfile="./Deploy/Adis.log.Listener.Winforms.zip">
+		<adisZip zipfile="./Deploy/Adis.log.Listener.Winforms.zip">
 			<fileset basedir="./listeners/Adis.log.Listener.Winforms/bin/${configuration}">
 				<include name="**"/>
 			</fileset>
-		</zip>
+		</adisZip>
 
-		<zip zipfile="./Deploy/Adis.log.Server.zip">
+		<adisZip zipfile="./Deploy/Adis.log.Server.zip">
 			<fileset basedir="./server/Adis.log.Server.Web">
 				<include name="**/*" />
 				<exclude name="**/obj/**" />
@@ -94,8 +94,8 @@
 				<exclude name="**/logfile*"/>
 				<exclude name="**/*dbml*"/>
 			</fileset>
-		</zip>
-		<zip zipfile="./Deploy/Adis.log.Reporter.zip">
+		</adisZip>
+		<adisZip zipfile="./Deploy/Adis.log.Reporter.zip">
 			<fileset basedir="./Reporter/Adis.Log.Reporter.MVC">
 				<include name="**/*" />
 				<exclude name="**/obj/**" />
@@ -109,7 +109,7 @@
 				<exclude name="**/logfile*"/>
 				<exclude name="**/*dbml*"/>
 			</fileset>
-		</zip>
+		</adisZip>
 		<call target="useDevConfigFiles"/>
 	</target>
 
