@@ -6,7 +6,7 @@
 	
 	<property name="configuration" value="debug" unless="${property::exists('configuration')}"/>
 
-	<target name="rebuild" depends="clean, cvsupdate, build, performtests, package "/>
+	<target name="rebuild" depends="clean, svnupdate, build, performtests, package "/>
 
 	<target name="clean">
 		<delete>
@@ -22,10 +22,8 @@
 		</delete>
 	</target>
 
-	<target name="cvsupdate">
-		<if test="${directory::exists('CVS')}">
-			<cvs-update cvsroot="\\aionfp1\cvs\cvsroot" module="logos" destination="." usesharpcvslib="false"/>
-		</if>
+	<target name="svnupdate">
+		<exec program="svn.exe" commandline="update" verbose="true" />
 	</target>
 
 	<target name="build" >
