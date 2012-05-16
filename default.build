@@ -4,6 +4,7 @@
 
 	<include buildfile="default.build.MailSettings.include"/>	
 	
+  <property name="nant.settings.currentframework" value="net-4.0" />    
 	<property name="configuration" value="debug" unless="${property::exists('configuration')}"/>
 
 	<target name="rebuild" depends="clean, svnupdate, build, performtests, package "/>
