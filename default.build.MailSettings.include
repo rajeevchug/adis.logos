@@ -1,12 +1,12 @@
 <if test="${not property::exists('MailLogger.mailhost')}">
-	<property name="MailLogger.mailhost" value="smtp.adis.co.nz" />
-	<property name="MailLogger.from" value="no-reply@adis.co.nz" />
+	<property name="MailLogger.mailhost" value="smtp.springer-sbm.com" />
+	<property name="MailLogger.from" value="garrick.simpson@springer.com" />
 	<property name="MailLogger.failure.notify" value="true" />
 	<property name="MailLogger.success.notify" value="true" />
-	<property name="MailLogger.failure.to" value="devbuild@adis.co.nz" />
-	<property name="MailLogger.success.to" value="devbuild@adis.co.nz" />
-	<property name="MailLogger.failure.subject" value="Nightly build failure !" />
-	<property name="MailLogger.success.subject" value="Nightly build successful" />
+	<property name="MailLogger.failure.to" value="garrick.simpson@springer.com" />
+	<property name="MailLogger.success.to" value="garrick.simpson@springer.com" />
+	<property name="MailLogger.failure.subject" value="Nightly build failure ! - ${project::get-name()}" />
+	<property name="MailLogger.success.subject" value="Nightly build successful - ${project::get-name()}" />
 	<property name="MailLogger.failure.attachments" value="MailLogger.failure.files" />
 	<property name="MailLogger.success.attachments" value="MailLogger.success.files" />
 
