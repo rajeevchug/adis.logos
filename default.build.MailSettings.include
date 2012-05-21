@@ -1,6 +1,6 @@
 <if test="${not property::exists('MailLogger.mailhost')}">
 	<property name="MailLogger.mailhost" value="smtp.springer-sbm.com" />
-	<property name="MailLogger.from" value="garrick.simpson@springer.com" />
+	<property name="MailLogger.from" value="nzaudevhome@springer.com" />
 	<property name="MailLogger.failure.notify" value="true" />
 	<property name="MailLogger.success.notify" value="true" />
 	<property name="MailLogger.failure.to" value="garrick.simpson@springer.com" />
