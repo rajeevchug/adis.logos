@@ -21,6 +21,11 @@
     </UpgradeBackupLocation>
     <TargetFrameworkProfile />
     <UseIISExpress>false</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -147,6 +152,13 @@
       <Project>{6F0B4872-6687-4A1E-8696-2A1B4F18A55F}</Project>
       <Name>Adis.Log.Contract</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Web.TEST.config" />
+    <Content Include="Web.STAGE.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.LIVE.config" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
