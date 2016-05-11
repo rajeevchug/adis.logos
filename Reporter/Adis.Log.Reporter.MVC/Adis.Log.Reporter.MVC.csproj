@@ -160,6 +160,9 @@
     </Content>
     <Content Include="Web.LIVE.config" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Web.TRAIN.config" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
